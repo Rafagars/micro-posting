@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block title %} Home {% endblock %}
+{% block content %}
+
+{% if message %}
+    {{ message }}
+{% endif %}
+
+	<div class="jumbotron">
+		<h1>Welcome to Micro-Posting</h1>
+		<a href="{{url_for('signup')}}" class="btn btn-lg btn-primary"> Sign Up</a>
+	</div>
+{% endblock %}
