@@ -13,11 +13,11 @@ Sign-Up
 {% if form %}
 <form action="{{url_for('signup')}}" method="POST" style="padding:5px;">
     <!-- Full Name Field -->
-    {{ form.full_name.label }}: <br>
-    {{ form.full_name }} 
+    {{ form.username.label }}: <br>
+    {{ form.username }} 
     <br>
-    {% if form.full_name.errors %}
-        {% for error in form.full_name.errors %}
+    {% if form.username.errors %}
+        {% for error in form.username.errors %}
         <b style="color:tomato;"> {{ error }} </b> 
         <br>
         {% endfor %}

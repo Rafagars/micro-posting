@@ -1,9 +1,9 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, TextAreaField
+from wtforms import StringField, PasswordField, SubmitField, TextAreaField, HiddenField
 from wtforms.validators import InputRequired, Email, EqualTo
 
 class SignUpForm(FlaskForm):
-	full_name = StringField('Username', validators = [InputRequired()])
+	username = StringField('Username', validators = [InputRequired()])
 	email = StringField('Email', validators = [InputRequired(), Email()])
 	password = PasswordField('Password', validators = [InputRequired()])
 	confirm_password = PasswordField('Confirm Password', validators = [InputRequired(), EqualTo('password')])
@@ -19,5 +19,6 @@ class LoginForm(FlaskForm):
 class NewPost(FlaskForm):
 	title = StringField('Title', validators = [InputRequired()])
 	body = TextAreaField('Body')
+	user_id = HiddenField(validators= [InputRequired()])
 
 	submit = SubmitField('Post')

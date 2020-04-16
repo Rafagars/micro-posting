@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %} New Post {% endblock %}
+
+{% block content %}
+
+    {% if message %}
+        {{ message }}
+        <br>
+    {% endif %}
+
+    {% if form %}
+    <form action="{{url_for('post/new')}}" method="POST">
+        
+        <!-- Title Field -->
+        {{ form.title.label }}: <br>
+        {{ form.title }}
+        <br>
+        {% if form.title.errors %}
+            {% for error in form.title.errors%}
+            <b style="color: tomato;">
+				{{ error }}
+			</b> <br>
+		    {% endfor %}
+        {% endif %}
+        
+        <!-- Body Field -->
+        {{ form.body.label }}: <br>
+        {{ form.body }}
+
+        {{ form.user_id = session['user']}}
+
+        {{ form.csrf_token }}
+        {{ form.submit }}
+
+    </form>
+    {% endif %}
+{% endblock %}

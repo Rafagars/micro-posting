@@ -1,5 +1,5 @@
 from flask import Flask, render_template, abort
-from forms import SignUpForm, LoginForm
+from forms import SignUpForm, LoginForm, NewPost
 from flask import session, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 
@@ -41,7 +41,7 @@ def index():
 def signup():
 	form = SignUpForm()
 	if form.validate_on_submit():
-		new_user = User(full_name = form.full_name.data, email = form.email.data, password = form.password.data)
+		new_user = User(username = form.username.data, email = form.email.data, password = form.password.data)
 		db.session.add(new_user)
 		try:
 			db.session.commit()
@@ -70,7 +70,24 @@ def login():
 def logout():
 	if 'user' in session:
 		session.pop('user')
-	return redirect(url_for('index', _scheme='https', _external=True))
+	return redirect(url_for('index'))
+
+@app.route("/post/new", methods = ["POST", "GET"])
+def newPost():
+	form = NewPost()
+	if form.validate_on_submit():
+		new_post = Post(title = form.title.data, body = form.body.data, user_id = form.user_id.data)
+		db.session.add(new_post)
+		try:
+			db.session.commit()
+		except Exception as e:
+			print(e)
+			db.session.rollback()
+			return render_template("NewPost.html", form = form, message = "Error creating the Post")
+		finally:
+			db.session.close()
+			return render_template("home.html", message = "Post successfully created")
+		return render_template("NewPost.html", form = form)
 
 if __name__=='__main__':
-	app.run(debug=True)
+	app.run(debug=True, host="0.0.0.0", port=3000)
