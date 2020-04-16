@@ -35,7 +35,8 @@ finally:
 
 @app.route('/')
 def index():
-	return render_template("home.html")
+	posts = Post.query.all()
+	return render_template("home.html", posts = posts)
 
 @app.route("/signup", methods = ["POST", "GET"])
 def signup():
@@ -72,11 +73,11 @@ def logout():
 		session.pop('user')
 	return redirect(url_for('index'))
 
-@app.route("/post/new", methods = ["POST", "GET"])
-def newPost():
+@app.route("/post", methods = ["POST", "GET"])
+def post():
 	form = NewPost()
 	if form.validate_on_submit():
-		new_post = Post(title = form.title.data, body = form.body.data, user_id = form.user_id.data)
+		new_post = Post(title = form.title.data, body = form.body.data, posted_by = session['user'])
 		db.session.add(new_post)
 		try:
 			db.session.commit()
@@ -86,8 +87,42 @@ def newPost():
 			return render_template("NewPost.html", form = form, message = "Error creating the Post")
 		finally:
 			db.session.close()
-			return render_template("home.html", message = "Post successfully created")
-		return render_template("NewPost.html", form = form)
+			return redirect(url_for("index"))
+	return render_template("NewPost.html", form = form)
+
+@app.route("/edit_post/<int:post_id>", methods = ["POST", "GET"])
+def edit_post(post_id):
+	form = NewPost()
+	post = Post.query.get(post_id)
+	if post is None:
+		abort(404, description="No Post was found with the given ID")
+	if form.validate_on_submit():
+		post.title = form.title.data
+		post.body = form.body.data
+		post.posted_by = session['user']
+		try:
+			db.session.commit()
+		except Exception as e:
+			db.session.rollback()
+			return render_template("EditPost.html", post = post, form = form, message = "Error editing the Post")
+		finally:
+			db.session.close()
+			return redirect(url_for("index"))
+
+	return render_template("EditPost.html", post = post, form = form)
+
+
+@app.route("/delete_post/<int:post_id>")
+def delete_post(post_id):
+	post = Post.query.get(post_id)
+	if post is None:
+		abort(404, description="No Post was Found with the given ID")
+	db.session.delete(post)
+	try:
+		db.session.commit()
+	except Exception as e:
+		db.session.rollback()
+	return redirect(url_for('index'))
 
 if __name__=='__main__':
 	app.run(debug=True, host="0.0.0.0", port=3000)

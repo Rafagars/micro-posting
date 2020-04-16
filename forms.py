@@ -17,8 +17,7 @@ class LoginForm(FlaskForm):
 	submit = SubmitField('Login')
 
 class NewPost(FlaskForm):
-	title = StringField('Title', validators = [InputRequired()])
-	body = TextAreaField('Body')
-	user_id = HiddenField(validators= [InputRequired()])
+	title = TextAreaField('Title', validators = [InputRequired()], render_kw = {"rows": 1, "cols": 60})
+	body = TextAreaField('Body', render_kw={"rows": 10, "cols": 60})
 
 	submit = SubmitField('Post')

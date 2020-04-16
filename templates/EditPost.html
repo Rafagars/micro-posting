@@ -10,11 +10,11 @@
     {% endif %}
 
     {% if form %}
-    <form action="{{url_for('post')}}" method="POST">
+    <form action="{{url_for('edit_post', post_id = post.id)}}" method="POST">
         
         <!-- Title Field -->
         {{ form.title.label }}: <br>
-        {{ form.title }}
+        {{ form.title(value = post.title) }}
         <br>
         {% if form.title.errors %}
             {% for error in form.title.errors%}
@@ -26,7 +26,7 @@
         
         <!-- Body Field -->
         {{ form.body.label }}: <br>
-        {{ form.body}}
+        {{ form.body(value = post.body)}}
         <br>
         {{ form.csrf_token }}
         <br>
