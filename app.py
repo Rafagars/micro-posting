@@ -60,7 +60,7 @@ def signup():
 			return render_template("Signup.html", form = form, message = "This Email already exists in the system! Please Login instead.")
 		finally:
 			db.session.close()
-		return redirect('index')
+		return redirect('login')
 	return render_template("Signup.html", form = form )
 
 @app.route("/login", methods = ["POST", "GET"])
@@ -72,7 +72,7 @@ def login():
 			return render_template("login.html", form = form, message = "Wrong Credentials. Please Try Again.")
 		else:
 			session['user'] = user.id
-			return redirect(url_for('login'))
+			return redirect(url_for('index'))
 	return render_template("login.html", form = form)
 
 @app.route("/logout")
