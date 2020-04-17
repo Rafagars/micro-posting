@@ -15,7 +15,19 @@
   background-color: #2b3138;
 }
 
+#body a {
+  text-decoration: none;
+}
+
 #posts .post {
+  box-sizing: content-box;
+  border: 2px double #22272c;
+  background-color: #2b3138;
+  margin-bottom: 5px;
+  padding: 10px 15px;
+}
+
+#login, #signup {
   box-sizing: content-box;
   border: 2px double #22272c;
   background-color: #2b3138;
