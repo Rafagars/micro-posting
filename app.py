@@ -60,7 +60,7 @@ def signup():
 			return render_template("Signup.html", form = form, message = "This Email already exists in the system! Please Login instead.")
 		finally:
 			db.session.close()
-		return render_template("home.html", message = "Successfully signed up")
+		return redirect('index')
 	return render_template("Signup.html", form = form )
 
 @app.route("/login", methods = ["POST", "GET"])
