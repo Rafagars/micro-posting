@@ -72,7 +72,7 @@ def login():
 			return render_template("login.html", form = form, message = "Wrong Credentials. Please Try Again.")
 		else:
 			session['user'] = user.id
-			return render_template("home.html", message = "Successfully Logged in")
+			return redirect(url_for('index'))
 	return render_template("login.html", form = form)
 
 @app.route("/logout")
