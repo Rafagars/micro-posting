@@ -15,6 +15,7 @@
       
           <a href="{{url_for('index')}}" style="display: inline; margin-right: 5px;">Home</a>
           {% if 'user' in session %}
+          <a href="{{url_for('show_user')}}" style="display: inline; margin-right: 5px;">Profile</a>
           <a href="{{url_for('logout')}}" style="display: inline; margin-right: 5px;">Log out</a>
           {% else %}
           <a href="{{url_for('login')}}" style="display: inline; margin-right: 5px;">Login</a>

@@ -6,8 +6,9 @@
 <div id="login">
 
 {% if message %}
-	{{message}}
-	<br>
+<div class="alert alert-danger" role="alert">
+    {{ message }}
+</div>
 {% endif %}
 
 {% if form %}

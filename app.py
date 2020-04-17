@@ -151,5 +151,10 @@ def like(post_id):
     db.session.commit()
     
     return redirect(url_for('index'))
+
+@app.route("/user")
+def show_user():
+	posts = Post.query.filter_by(posted_by = session['user'])
+	return render_template("ShowUser.html", posts = posts)
 if __name__=='__main__':
 	app.run(debug=True, host="0.0.0.0", port=3000)
