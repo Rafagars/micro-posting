@@ -43,7 +43,7 @@ finally:
 
 @app.route('/')
 def index():
-	posts = Post.query.all()
+	posts = Post.query.order_by(Post.id.desc()).all()
 	return render_template("home.html", posts = posts)
 
 @app.route("/signup", methods = ["POST", "GET"])

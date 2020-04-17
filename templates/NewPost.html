@@ -13,8 +13,10 @@
     <form action="{{url_for('post')}}" method="POST">
         
         <!-- Title Field -->
-        {{ form.title.label }}: <br>
-        {{ form.title }}
+        <p class="d-flex justify-content-center">
+            {{ form.title.label }}: <br>
+            {{ form.title }}
+        </p>
         <br>
         {% if form.title.errors %}
             {% for error in form.title.errors%}
@@ -25,8 +27,10 @@
         {% endif %}
         
         <!-- Body Field -->
-        {{ form.body.label }}: <br>
-        {{ form.body}}
+        <p class="d-flex justify-content-center">
+            {{ form.body.label }}: <br>
+            {{ form.body}}
+        </p>
         <br>
         {{ form.csrf_token }}
         <br>

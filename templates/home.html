@@ -3,14 +3,17 @@
 {% block content %}
 
 {% if message %}
-    {{ message }}
+<div class="alert alert-primary" role="alert">
+	{{ message }}
+  </div>
 {% endif %}
 	{% if 'user' in session %}
-		<div class="jumbotron justify-content-center">
-			<a href="{{url_for('post')}}" class="btn btn-lg btn-primary"> New Post</a>
+	<a href="{{url_for('post')}}" class="btn btn-primary offset-5"> New Post</a>
+		<div id="posts">
 			{% for post in posts %}
-				<div class="container">
-					<h2>{{post.title}}</h2>
+				<br>
+				<div class="post">
+					<h2 class="">{{post.title}}</h2>
 					<p>{{post.body}}</p>
 					
 					<p class="likes"><a href="{{url_for('like', post_id = post.id)}}" class="far fa-heart"></a><span style="margin-left: 5px;">{{ post.likes.count() }}</span></p>
@@ -20,12 +23,13 @@
 					<h6><a href="{{url_for('delete_post', post_id = post.id)}}">Delete</a></h6>
 					{% endif %}
 				</div>
+				
 			{% endfor %}
 		</div>
 	{% else %}
 	<div class="jumbotron">
-		<h1>Welcome to Micro-Posting</h1>
-		<a href="{{url_for('signup')}}" class="btn btn-lg btn-primary"> Sign Up</a>
+		<h1 class="text-center">Welcome to Micro-Posting</h1>
+		<a href="{{url_for('signup')}}" class="btn btn-lg btn-primary offset-5"> Sign Up</a>
 	</div>
 	{% endif %}
 {% endblock %}
