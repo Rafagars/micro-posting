@@ -22,6 +22,14 @@ class Post(db.Model):
 	title = db.Column(db.String)
 	body = db.Column(db.Text)
 	posted_by = db.Column(db.Integer, db.ForeignKey('user.id'))
+	likes = db.relationship('PostLike', backref='post', lazy='dynamic')
+ 
+""" Model for Likes """
+class PostLike(db.Model):
+    __tablename__ = 'post_like'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    post_id = db.Column(db.Integer, db.ForeignKey('post.id'))
 
 db.create_all()
 
@@ -124,5 +132,24 @@ def delete_post(post_id):
 		db.session.rollback()
 	return redirect(url_for('index'))
 
+@app.route("/like/<int:post_id>")
+def like(post_id):
+    liked = PostLike.query.filter(
+		PostLike.user_id == session['user'],
+		PostLike.post_id == post_id
+	).count()
+    
+    if liked == 0:
+        like = PostLike(user_id = session['user'], post_id = post_id)
+        db.session.add(like)
+    else:
+        PostLike.query.filter_by(
+			user_id = session['user'],
+			post_id = post_id
+		).delete()
+    
+    db.session.commit()
+    
+    return redirect(url_for('index'))
 if __name__=='__main__':
 	app.run(debug=True, host="0.0.0.0", port=3000)
