@@ -41,7 +41,7 @@ class User(db.Model, UserMixin):
 		return PostLike.query.filter(
 			PostLike.user_id == self.id,
 			PostLike.post_id == post.id
-		)
+		).count() > 0
  
 	def set_password(self, password):
 		self.password = generate_password_hash(password)
