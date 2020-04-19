@@ -1,5 +1,8 @@
 $(document).ready(
-    $(".likes a").on('click', function () {
-        $(this).removeClass('far').addClass('fas');
+    $(".like a").on('click', function () {
+        $(this).toggleClass('fas');;
+    }),
+        $(".unlike a").on('click', function () {
+        $(this).toggleClass('far');;
     })
 );

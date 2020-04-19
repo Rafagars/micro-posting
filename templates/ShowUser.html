@@ -1,10 +1,10 @@
 {% extends "base.html" %}
 
-{% block title %} User Profile {% endblock %}
+{% block title %} {{current_user.username}}'s Profile {% endblock %}
 
 {% block content %}
 
-<h1> Your Profile </h1>
+<h1> {{current_user.username}}'s Profile </h1>
 <h6> Number of posts: {{posts.count()}} </h6>
 
 		<div id="posts">

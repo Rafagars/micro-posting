@@ -21,9 +21,9 @@
 					<h6><a href="{{url_for('edit_post', post_id = post.id)}}" class="float-right"> Edit</a></h6>
 					{% endif %}
 					{% if current_user.has_liked_post(post) %}
-					<p class="likes"><a href="{{ url_for('like_action', post_id=post.id, action='unlike') }}" class="fas fa-heart"></a><span style="margin-left: 5px;">{{ post.likes.count() }}</span></p>
+					<p class="unlike"><a href="{{ url_for('like_action', post_id=post.id, action='unlike') }}" class="fas fa-heart"></a><span style="margin-left: 5px;">{{ post.likes.count() }}</span></p>
 					{% else %}
-					<p class="likes"><a href="{{ url_for('like_action', post_id=post.id, action='like') }}" class="far fa-heart"></a><span style="margin-left: 5px;">{{ post.likes.count() }}</span></p>
+					<p class="like"><a href="{{ url_for('like_action', post_id=post.id, action='like') }}" class="far fa-heart"></a><span style="margin-left: 5px;">{{ post.likes.count() }}</span></p>
 					{% endif %}
 				</div>
 				
