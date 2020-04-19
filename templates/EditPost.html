@@ -14,7 +14,7 @@
         
         <!-- Title Field -->
         {{ form.title.label }}: <br>
-        {{ form.title(value = post.title) }}
+        {{ form.title(class = 'form-control') }}
         <br>
         {% if form.title.errors %}
             {% for error in form.title.errors%}
@@ -26,7 +26,7 @@
         
         <!-- Body Field -->
         {{ form.body.label }}: <br>
-        {{ form.body(value = post.body)}}
+        {{ form.body(class = 'form-control')}}
         <br>
         {{ form.csrf_token }}
         <br>

@@ -15,7 +15,7 @@
         <!-- Title Field -->
         <p class="d-flex justify-content-center">
             {{ form.title.label }}: <br>
-            {{ form.title }}
+            {{ form.title(class = 'form-control') }}
         </p>
         <br>
         {% if form.title.errors %}
@@ -29,7 +29,7 @@
         <!-- Body Field -->
         <p class="d-flex justify-content-center">
             {{ form.body.label }}: <br>
-            {{ form.body}}
+            {{ form.body(class = 'form-control')}}
         </p>
         <br>
         {{ form.csrf_token }}

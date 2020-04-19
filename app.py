@@ -5,6 +5,8 @@ from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 
+###### CONFIG ###########
+
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '8b9373cb34f0296e4330d2216356b8981fcc2f27021812aa'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///micro-post.db'
@@ -13,6 +15,7 @@ login_manager = LoginManager(app)
 login_manager.init_app(app)
 login_manager.login_view = "login"
 
+#### MODELS ########
 
 """Model for User"""
 class User(db.Model, UserMixin):
@@ -87,6 +90,8 @@ except Exception as e:
 finally:
     db.session.close()
 
+####### ROUTES #############
+
 @login_manager.user_loader
 def load_user(user_id):
 	return User.get_by_id(user_id)
@@ -103,6 +108,7 @@ def login():
 	form = LoginForm()
 	if form.validate_on_submit():
 		user = User.get_by_email(form.email.data)
+		#Checks if user exists and then checks user's password
 		if user is not None and user.check_password(form.password.data):
 			login_user(user, remember = form.remember_me.data)
 			next_page = request.args.get('next')
@@ -122,16 +128,16 @@ def signup():
 		email = form.email.data
 		password = form.password.data
 
-		#Comprobamos que no hay un usuario con ese email
+		#Check if other user has this email
 		user = User.get_by_email(email)
 		if user is not None:
 			message = f'El email {email} ya esta en uso'
 		else:
-			#Creamos el usuario y lo guardamos
+			#Create user and save it
 			user = User(username = username, email = email)
 			user.set_password(password)
 			user.save()
-			#Dejamos al usuario logueado
+			#Log in the user
 			login_user(user, remember = True)
 			next_page = request.args.get('next', None)
 			if not next_page or url_parse(next_page).netloc != '':
@@ -141,6 +147,7 @@ def signup():
 
 
 @app.route("/logout")
+@login_required
 def logout():
 	logout_user()
 	return redirect(url_for('index'))
@@ -166,8 +173,8 @@ def post():
 @app.route("/edit_post/<int:post_id>", methods = ["POST", "GET"])
 @login_required
 def edit_post(post_id):
-	form = NewPost()
 	post = Post.query.get(post_id)
+	form = NewPost(obj=post)
 	if post is None:
 		abort(404, description="No Post was found with the given ID")
 	if form.validate_on_submit():
