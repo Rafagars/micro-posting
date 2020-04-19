@@ -63,5 +63,6 @@ Sign-Up
     {{ form.submit }}
 </form> 
 {% endif %}
+<p class="redirect">Already had an account? <a href="{{url_for('login')}}">Login</a></p>
 </div>
 {% endblock %}

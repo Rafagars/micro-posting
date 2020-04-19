@@ -51,6 +51,8 @@
     flex-wrap: wrap;
     justify-content: center;
     padding-top: 20px;
+    padding-left: 10px;
+    padding-right: 10px;
   }
 
   #login form input[type="password"], #login form input[type="text"], #login form input[type="email"],
@@ -73,19 +75,24 @@
       cursor: pointer;
       font-weight: bold;
       color: #ffffff;
-      transition: background-color 0.2s;
-      &:hover  {
-        background-color: #2b3138;
-        transition: background-color 0.2s;
-      }
+  }
+
+  #login form input[type="submit"]:hover, #signup form input[type="submit"]:hover {
+    background-color: #2b3138;
+    transition: background-color 0.2s;
+  }
 
 
-.label{
-  display: flex;
+#login form .label, #signup form .label{
   justify-content: center;
   align-items: center;
-  width: 40px;
-  height: 40px;
+  width: 35px;
+  height: 35px;
   background-color: #24262d;
   color: #ffffff;
+  padding: 5px 10px 0 10px;
+}
+
+#login .redirect, #signup .redirect{
+  margin: 5px 10px;
 }
