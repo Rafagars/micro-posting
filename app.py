@@ -21,7 +21,28 @@ class User(db.Model, UserMixin):
 	email = db.Column(db.String, unique = True)
 	password = db.Column(db.String)
 	post = db.relationship('Post', backref = 'user')
-
+	liked = db.relationship('PostLike',
+                         foreign_keys='PostLike.user_id',
+                         backref='user', lazy='dynamic')
+	
+	def like_post(self, post):
+		if not self.has_liked_post(post):
+			like = PostLike(user_id = self.id, post_id = post.id)
+			db.session.add(like)
+			
+	def unlike_post(self, post):
+		if self.has_liked_post(post):
+			PostLike.query.filter_by(
+				user_id = self.id,
+				post_id = post.id
+			).delete()
+   
+	def has_liked_post(self, post):
+		return PostLike.query.filter(
+			PostLike.user_id == self.id,
+			PostLike.post_id == post.id
+		)
+ 
 	def set_password(self, password):
 		self.password = generate_password_hash(password)
 
@@ -178,26 +199,17 @@ def delete_post(post_id):
 		db.session.rollback()
 	return redirect(url_for('index'))
 
-@app.route("/like/<int:post_id>")
+@app.route("/like/<int:post_id>/<action>")
 @login_required
-def like(post_id):
-    liked = PostLike.query.filter(
-		PostLike.user_id == current_user.id,
-		PostLike.post_id == post_id
-	).count()
-    
-    if liked == 0:
-        like = PostLike(user_id = current_user.id , post_id = post_id)
-        db.session.add(like)
-    else:
-        PostLike.query.filter_by(
-			user_id = current_user.id,
-			post_id = post_id
-		).delete()
-    
-    db.session.commit()
-    
-    return redirect(url_for('index'))
+def like_action(post_id, action):
+    post = Post.query.filter_by(id = post_id).first_or_404()
+    if action == 'like':
+        current_user.like_post(post)
+        db.session.commit()
+    if action == 'unlike':
+        current_user.unlike_post(post)
+        db.session.commit()
+    return redirect(request.referrer)
 
 @app.route("/user")
 @login_required
