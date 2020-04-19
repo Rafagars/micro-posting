@@ -1,20 +1,45 @@
 from flask import Flask, render_template, abort
 from forms import SignUpForm, LoginForm, NewPost
-from flask import session, redirect, url_for
+from flask import session, redirect, url_for, request
 from flask_sqlalchemy import SQLAlchemy
+from werkzeug.security import generate_password_hash, check_password_hash
+from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '8b9373cb34f0296e4330d2216356b8981fcc2f27021812aa'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///micro-post.db'
 db = SQLAlchemy(app)
+login_manager = LoginManager(app)
+login_manager.init_app(app)
+login_manager.login_view = "login"
+
 
 """Model for User"""
-class User(db.Model):
+class User(db.Model, UserMixin):
 	id = db.Column(db.Integer, primary_key = True)
 	username = db.Column(db.String, unique = True)
 	email = db.Column(db.String, unique = True)
 	password = db.Column(db.String)
 	post = db.relationship('Post', backref = 'user')
+
+	def set_password(self, password):
+		self.password = generate_password_hash(password)
+
+	def check_password(self, password):
+		return check_password_hash(self.password, password)
+
+	def save(self):
+		if not self.id:
+			db.session.add(self)
+		db.session.commit()
+
+	@staticmethod
+	def get_by_id(id):
+		return User.query.get(id)
+
+	@staticmethod
+	def get_by_email(email):
+		return User.query.filter_by(email = email).first()
 
 """Model for Post"""
 class Post(db.Model):
@@ -41,51 +66,70 @@ except Exception as e:
 finally:
     db.session.close()
 
+@login_manager.user_loader
+def load_user(user_id):
+	return User.get_by_id(user_id)
+
 @app.route('/')
 def index():
 	posts = Post.query.order_by(Post.id.desc()).all()
 	return render_template("home.html", posts = posts)
 
-@app.route("/signup", methods = ["POST", "GET"])
-def signup():
-	form = SignUpForm()
-	if form.validate_on_submit():
-		new_user = User(username = form.username.data, email = form.email.data, password = form.password.data)
-		db.session.add(new_user)
-		try:
-			db.session.commit()
-		except Exception as e:
-			print (e)
-			db.session.rollback()
-			return render_template("Signup.html", form = form, message = "This Email already exists in the system! Please Login instead.")
-		finally:
-			db.session.close()
-		return redirect('login')
-	return render_template("Signup.html", form = form )
-
 @app.route("/login", methods = ["POST", "GET"])
 def login():
+	if current_user.is_authenticated:
+		redirect(url_for('index'))
 	form = LoginForm()
 	if form.validate_on_submit():
-		user = User.query.filter_by(email = form.email.data, password = form.password.data).first()
-		if user is None:
-			return render_template("login.html", form = form, message = "Wrong Credentials. Please Try Again.")
+		user = User.get_by_email(form.email.data)
+		if user is not None and user.check_password(form.password.data):
+			login_user(user, remember = form.remember_me.data)
+			next_page = request.args.get('next')
+			if not next_page or url_parse(next_page).netloc != '':
+				next_page = url_for('index')
+			return redirect(next_page)
+	return render_template('login.html', form = form)
+
+@app.route("/signup", methods = ["POST", "GET"])
+def signup():
+	if current_user.is_authenticated:
+		redirect(url_for('index'))
+	form = SignUpForm()
+	message = None
+	if form.validate_on_submit():
+		username = form.username.data
+		email = form.email.data
+		password = form.password.data
+
+		#Comprobamos que no hay un usuario con ese email
+		user = User.get_by_email(email)
+		if user is not None:
+			message = f'El email {email} ya esta en uso'
 		else:
-			session['user'] = user.id
-			return redirect(url_for('index'))
-	return render_template("login.html", form = form)
+			#Creamos el usuario y lo guardamos
+			user = User(username = username, email = email)
+			user.set_password(password)
+			user.save()
+			#Dejamos al usuario logueado
+			login_user(user, remember = True)
+			next_page = request.args.get('next', None)
+			if not next_page or url_parse(next_page).netloc != '':
+				next_page = url_for('index')
+			return redirect(next_page)
+	return render_template('Signup.html', form = form, message = message)
+
 
 @app.route("/logout")
 def logout():
-	if 'user' in session:
-		session.pop('user')
+	logout_user()
 	return redirect(url_for('index'))
 
 @app.route("/post", methods = ["POST", "GET"])
+@login_required
 def post():
 	form = NewPost()
 	if form.validate_on_submit():
-		new_post = Post(title = form.title.data, body = form.body.data, posted_by = session['user'])
+		new_post = Post(title = form.title.data, body = form.body.data, posted_by = current_user.id)
 		db.session.add(new_post)
 		try:
 			db.session.commit()
@@ -99,6 +143,7 @@ def post():
 	return render_template("NewPost.html", form = form)
 
 @app.route("/edit_post/<int:post_id>", methods = ["POST", "GET"])
+@login_required
 def edit_post(post_id):
 	form = NewPost()
 	post = Post.query.get(post_id)
@@ -107,7 +152,7 @@ def edit_post(post_id):
 	if form.validate_on_submit():
 		post.title = form.title.data
 		post.body = form.body.data
-		post.posted_by = session['user']
+		post.posted_by = current_user.id
 		try:
 			db.session.commit()
 		except Exception as e:
@@ -121,6 +166,7 @@ def edit_post(post_id):
 
 
 @app.route("/delete_post/<int:post_id>")
+@login_required
 def delete_post(post_id):
 	post = Post.query.get(post_id)
 	if post is None:
@@ -133,18 +179,19 @@ def delete_post(post_id):
 	return redirect(url_for('index'))
 
 @app.route("/like/<int:post_id>")
+@login_required
 def like(post_id):
     liked = PostLike.query.filter(
-		PostLike.user_id == session['user'],
+		PostLike.user_id == current_user.id,
 		PostLike.post_id == post_id
 	).count()
     
     if liked == 0:
-        like = PostLike(user_id = session['user'], post_id = post_id)
+        like = PostLike(user_id = current_user.id , post_id = post_id)
         db.session.add(like)
     else:
         PostLike.query.filter_by(
-			user_id = session['user'],
+			user_id = current_user.id,
 			post_id = post_id
 		).delete()
     
@@ -153,8 +200,10 @@ def like(post_id):
     return redirect(url_for('index'))
 
 @app.route("/user")
+@login_required
 def show_user():
-	posts = Post.query.filter_by(posted_by = session['user'])
+	posts = Post.query.filter_by(posted_by = current_user.id )
 	return render_template("ShowUser.html", posts = posts)
+
 if __name__=='__main__':
 	app.run(debug=True, host="0.0.0.0", port=3000)

@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, TextAreaField, HiddenField
+from wtforms import StringField, PasswordField, SubmitField, TextAreaField, BooleanField
 from wtforms.validators import InputRequired, Email, EqualTo
 
 class SignUpForm(FlaskForm):
@@ -13,7 +13,8 @@ class SignUpForm(FlaskForm):
 class LoginForm(FlaskForm):
 	email = StringField('Email', validators = [InputRequired(), Email()])
 	password = PasswordField('Password', validators = [InputRequired()])
-	
+	remember_me = BooleanField('Remember me')
+
 	submit = SubmitField('Login')
 
 class NewPost(FlaskForm):

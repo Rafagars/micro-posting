@@ -37,6 +37,9 @@
         {% endfor %}
     {% endif %}
 
+    {{ form.remember_me.label }}
+    {{ form.remember_me }}
+
     {{ form.csrf_token }}
     {{ form.submit }}
     
