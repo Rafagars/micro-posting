@@ -1,5 +1,5 @@
 from flask import Flask, render_template, abort
-from forms import SignUpForm, LoginForm, NewPost
+from forms import SignUpForm, LoginForm, NewPost, EditUser
 from flask import session, redirect, url_for, request
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -115,6 +115,9 @@ def login():
 			if not next_page or url_parse(next_page).netloc != '':
 				next_page = url_for('index')
 			return redirect(next_page)
+		else:
+			message = "Sorry, wrong email or pasword" 
+			return(render_template('login.html', form = form, message = message))
 	return render_template('login.html', form = form)
 
 @app.route("/signup", methods = ["POST", "GET"])
@@ -183,7 +186,7 @@ def edit_post(post_id):
 		post.posted_by = current_user.id
 		try:
 			db.session.commit()
-		except Exception as e:
+		except:
 			db.session.rollback()
 			return render_template("EditPost.html", post = post, form = form, message = "Error editing the Post")
 		finally:
@@ -218,11 +221,26 @@ def like_action(post_id, action):
         db.session.commit()
     return redirect(request.referrer)
 
-@app.route("/user")
+@app.route("/user/<int:user_id>")
 @login_required
-def show_user():
+def show_user(user_id):
 	posts = Post.query.filter_by(posted_by = current_user.id )
 	return render_template("ShowUser.html", posts = posts)
+
+@app.route("/edit_user/<int:user_id>", methods = ['POST', 'GET'])
+@login_required
+def edit_user(user_id):
+	form = EditUser()
+	if form.validate_on_submit():
+		user = User.get_by_id(user_id)
+		if user.check_password(form.current_password.data):
+			user.set_password(form.new_password.data)
+			user.save()
+			return redirect(url_for('index'))
+		else:
+			message = "That's not your current password"
+			return render_template("EditUser.html", form = form, message = message)
+	return render_template("EditUser.html", form = form)
 
 if __name__=='__main__':
 	app.run(debug=True, host="0.0.0.0", port=3000)

@@ -22,3 +22,10 @@ class NewPost(FlaskForm):
 	body = TextAreaField('Body', render_kw={"rows": 10, "cols": 60})
 
 	submit = SubmitField('Post')
+
+class EditUser(FlaskForm):
+	current_password = PasswordField('Current Password', validators = [InputRequired()])
+	new_password = PasswordField('New Password', validators = [InputRequired()])
+	confirm_password = PasswordField('Confirm New Password', validators = [InputRequired()])
+
+	submit = SubmitField('Change')
