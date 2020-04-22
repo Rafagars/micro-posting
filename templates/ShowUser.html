@@ -8,28 +8,38 @@
 {% if current_user.id == user.id %}
 <h6><a href="{{url_for('edit_user', user_id = current_user.id)}}" class="float-right"> Change Password</a></h6>
 {% endif %}
-<h6> Number of posts: {{posts.count()}} </h6>
 
-		<div id="posts">
-			{% for post in posts %}
-				<br>
-				<div class="post">
-					<h2 class="">{{post.title}}</h2>
-					<p>{{post.body}}</p>
 
-					{% if current_user.id == post.posted_by %}
-					<h6><a href="{{url_for('delete_post', post_id = post.id)}}" class="float-right">&emsp; Delete</a></h6>
-					<h6><a href="{{url_for('edit_post', post_id = post.id)}}" class="float-right"> Edit</a></h6>
-					{% endif %}
-					{% if current_user.has_liked_post(post) %}
-					<p class="likes"><a href="{{ url_for('like_action', post_id=post.id, action='unlike') }}" class="fas fa-heart"></a><span style="margin-left: 5px;">{{ post.likes.count() }}</span></p>
-					{% else %}
-					<p class="likes"><a href="{{ url_for('like_action', post_id=post.id, action='like') }}" class="far fa-heart"></a><span style="margin-left: 5px;">{{ post.likes.count() }}</span></p>
-					{% endif %}
+<div id="posts">
+	{% for post in posts %}
+	<br>
+	<div class="post">
 
-				</div>
+		<h2 class="">{{post.title}}</h2>
+		<p>{{post.body}}</p>
+
+		{% if current_user.id == post.posted_by %}
+		<h6><a href="{{url_for('delete_post', post_id = post.id)}}" class="float-right">&emsp; Delete</a></h6>
+		<h6><a href="{{url_for('edit_post', post_id = post.id)}}" class="float-right"> Edit</a></h6>
+		{% endif %}
+
+		{% if current_user.has_liked_post(post) %}
+		<p class="likes"><a href="{{ url_for('like_action', post_id=post.id, action='unlike') }}" class="fas fa-heart"></a><span style="margin-left: 5px;">{{ post.likes.count() }}</span></p>
+		{% else %}
+		<p class="likes"><a href="{{ url_for('like_action', post_id=post.id, action='like') }}" class="far fa-heart"></a><span style="margin-left: 5px;">{{ post.likes.count() }}</span></p>
+		{% endif %}
+
+	</div>
 				
-			{% endfor %}
-		</div>
+	{% endfor %}
+
+	{% if prev_url %}
+    <a href="{{ prev_url }}">Newer posts</a>
+    {% endif %}
+    {% if next_url %}
+    <a href="{{ next_url }}">Older posts</a>
+    {% endif %}
+
+</div>
 
 {% endblock %}

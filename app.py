@@ -1,6 +1,6 @@
-from flask import Flask, render_template, abort
+from flask import Flask, render_template, abort, redirect, url_for, request
 from forms import SignUpForm, LoginForm, NewPost, EditUser
-from flask import session, redirect, url_for, request
+from flask_paginate import Pagination, get_page_parameter
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
@@ -98,11 +98,17 @@ def load_user(user_id):
 
 @app.route('/')
 def index():
-	posts = Post.query.order_by(Post.id.desc()).all()
-	for post in posts:
+	page = request.args.get(get_page_parameter(), type=int, default=1)
+	posts = Post.query.order_by(Post.id.desc()).paginate(page = page, per_page = 5, error_out = True)
+	next_url = url_for('index', page=posts.next_num) \
+	if posts.has_next else None
+	prev_url = url_for('index', page=posts.prev_num) \
+    if posts.has_prev else None
+
+	for post in posts.items:
 		user = User.get_by_id(post.posted_by)
 		post.username = user.username
-	return render_template("home.html", posts = posts)
+	return render_template("home.html", posts = posts.items, next_url = next_url, prev_url = prev_url)
 
 @app.route("/login", methods = ["POST", "GET"])
 def login():
@@ -225,11 +231,15 @@ def like_action(post_id, action):
     return redirect(request.referrer)
 
 @app.route("/user/<username>")
-@login_required
 def show_user(username):
 	user = User.query.filter_by(username = username).first()
-	posts = Post.query.filter_by(posted_by = user.id)
-	return render_template("ShowUser.html", posts = posts, user = user)
+	page = request.args.get(get_page_parameter(), type=int, default=1)
+	posts = Post.query.filter_by(posted_by = user.id).paginate(page = page, per_page = 5, error_out = True)
+	next_url = url_for('show_user', username = user.username, page=posts.next_num) \
+	if posts.has_next else None
+	prev_url = url_for('show_user', username = user.username, page=posts.prev_num) \
+    if posts.has_prev else None
+	return render_template("ShowUser.html", posts = posts.items, user = user, next_url = next_url, prev_url = prev_url)
 
 @app.route("/edit_user/<int:user_id>", methods = ['POST', 'GET'])
 @login_required
