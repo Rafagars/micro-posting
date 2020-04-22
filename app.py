@@ -85,7 +85,7 @@ db.create_all()
 # Commit changes in the session
 try:
     db.session.commit()
-except Exception as e: 
+except: 
     db.session.rollback()
 finally:
     db.session.close()
@@ -99,6 +99,9 @@ def load_user(user_id):
 @app.route('/')
 def index():
 	posts = Post.query.order_by(Post.id.desc()).all()
+	for post in posts:
+		user = User.get_by_id(post.posted_by)
+		post.username = user.username
 	return render_template("home.html", posts = posts)
 
 @app.route("/login", methods = ["POST", "GET"])
@@ -205,7 +208,7 @@ def delete_post(post_id):
 	db.session.delete(post)
 	try:
 		db.session.commit()
-	except Exception as e:
+	except:
 		db.session.rollback()
 	return redirect(url_for('index'))
 
@@ -224,8 +227,9 @@ def like_action(post_id, action):
 @app.route("/user/<int:user_id>")
 @login_required
 def show_user(user_id):
-	posts = Post.query.filter_by(posted_by = current_user.id )
-	return render_template("ShowUser.html", posts = posts)
+	user = User.get_by_id(user_id)
+	posts = Post.query.filter_by(posted_by = user.id)
+	return render_template("ShowUser.html", posts = posts, user = user)
 
 @app.route("/edit_user/<int:user_id>", methods = ['POST', 'GET'])
 @login_required

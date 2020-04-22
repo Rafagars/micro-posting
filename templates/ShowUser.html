@@ -1,11 +1,13 @@
 {% extends "base.html" %}
 
-{% block title %} {{current_user.username}}'s Profile {% endblock %}
+{% block title %} {{ user.username }}'s Profile {% endblock %}
 
 {% block content %}
 
-<h1> {{current_user.username}}'s Profile </h1>
+<h1> {{ user.username }}'s Profile </h1>
+{% if current_user.id == user.id %}
 <h6><a href="{{url_for('edit_user', user_id = current_user.id)}}" class="float-right"> Change Password</a></h6>
+{% endif %}
 <h6> Number of posts: {{posts.count()}} </h6>
 
 		<div id="posts">
