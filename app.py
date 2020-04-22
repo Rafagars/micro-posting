@@ -224,10 +224,10 @@ def like_action(post_id, action):
         db.session.commit()
     return redirect(request.referrer)
 
-@app.route("/user/<int:user_id>")
+@app.route("/user/<username>")
 @login_required
-def show_user(user_id):
-	user = User.get_by_id(user_id)
+def show_user(username):
+	user = User.query.filter_by(username = username).first()
 	posts = Post.query.filter_by(posted_by = user.id)
 	return render_template("ShowUser.html", posts = posts, user = user)
 
