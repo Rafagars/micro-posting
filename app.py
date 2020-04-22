@@ -1,8 +1,8 @@
 from flask import Flask, render_template, abort, redirect, url_for, request
 from forms import SignUpForm, LoginForm, NewPost, EditUser
-from flask_paginate import Pagination, get_page_parameter
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.urls import url_parse
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 
 ###### CONFIG ###########
@@ -98,7 +98,7 @@ def load_user(user_id):
 
 @app.route('/')
 def index():
-	page = request.args.get(get_page_parameter(), type=int, default=1)
+	page = request.args.get('page', 1, type=int)
 	posts = Post.query.order_by(Post.id.desc()).paginate(page = page, per_page = 5, error_out = True)
 	next_url = url_for('index', page=posts.next_num) \
 	if posts.has_next else None
@@ -233,7 +233,7 @@ def like_action(post_id, action):
 @app.route("/user/<username>")
 def show_user(username):
 	user = User.query.filter_by(username = username).first()
-	page = request.args.get(get_page_parameter(), type=int, default=1)
+	page = request.args.get('page', 1, type=int)
 	posts = Post.query.filter_by(posted_by = user.id).paginate(page = page, per_page = 5, error_out = True)
 	next_url = url_for('show_user', username = user.username, page=posts.next_num) \
 	if posts.has_next else None
