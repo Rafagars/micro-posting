@@ -128,18 +128,21 @@ def show_post(post_id):
 	user = User.get_by_id(post.posted_by)
 	post.username = user.username
 	comments = Comment.query.order_by(Comment.id.desc()).all()
+	for comment in comments:
+		comment.username = user.username
 	form = CommentForm()
 	if form.validate_on_submit():
 		comment = Comment(body = form.body.data, post_id = post.id, user_id = user.id)
+		db.session.add(comment)
 		try:
 			db.session.commit()
 		except:
 			db.session.rollback()
-			return render_template("ShowPost.html", post = post, form = form)
+			return render_template("ShowPost.html", post = post, form = form, comments = comments)
 		finally:
 			db.session.close()
-			return redirect(url_for('show_user', post_id = post.id))
-	return render_template("ShowPost.html", post = post, form = form)
+			return redirect(url_for('index'))
+	return render_template("ShowPost.html", post = post, form = form, comments = comments)
 
 
 @app.route("/delete_post/<int:post_id>")

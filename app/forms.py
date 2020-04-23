@@ -31,6 +31,6 @@ class EditUser(FlaskForm):
 	submit = SubmitField('Change')
 
 class CommentForm(FlaskForm):
-	body = TextAreaField('Body', render_kw={"rows": 5, "cols": 60})
+	body = TextAreaField('Body', validators = [InputRequired()], render_kw={"rows": 5, "cols": 60})
 
 	submit = SubmitField('Comment')

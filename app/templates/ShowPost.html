@@ -3,7 +3,7 @@
 {% block title %} {{post.title}} {% endblock %}
 
 {% block content %}
-    <div class="post">
+    <div class="posts">
         <h2>{{ post.title }}</h2>
 
 		<p>{{post.body}}</p>
@@ -29,24 +29,20 @@
     <div class="post">
     	<form action="{{url_for('show_post', post_id = post.id )}}" method="POST">
     	{{ form.body }} <br>
+    	{{ form.csrf_token }}
         {{ form.submit(class = 'btn btn-primary')}}
     	</form>
     </div>
+    <br>
+    <div id="comments">
     {% for comment in comments %}
-    <div>
-    	<p>
-    		{{ comment.body }}
-    	</p>
-    	<!--
-    	{% if current_user.has_liked(comment) %}
-		<p class="unlike">
-			<a href="{{ url_for('like_action', comment_id=comment.id, action='unlike') }}" class="fas fa-heart"></a><span style="margin-left: 5px;">{{ comment.likes.count() }}</span>
-		</p>
-		{% else %}
-		<p class="like">
-			<a href="{{ url_for('like_action', comment_id=comment.id, action='like') }}" class="far fa-heart"></a><span style="margin-left: 5px;">{{ post.likes.count() }}</span>
-		</p>
-		{% endif %} -->
-    </div>
+    	<div class="comment">
+    		<p>
+    			{{ comment.body }}
+    		</p>
+    		<p><h6> Posted by: <a href="{{url_for('show_user', username = post.username)}}">{{ post.username }}</a></h6></p>
+
+    	</div>
+	</div>
     {% endfor %}
 {% endblock %}
