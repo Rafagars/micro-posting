@@ -3,7 +3,8 @@
 {% block title %} {{post.title}} {% endblock %}
 
 {% block content %}
-    <div class="posts">
+	<div id="show">
+    <div class="post">
         <h2>{{ post.title }}</h2>
 
 		<p>{{post.body}}</p>
@@ -25,6 +26,7 @@
 
 		<p><h6> Posted by: <a href="{{url_for('show_user', username = post.username)}}">{{ post.username }}</a></h6></p>
     </div>
+	</div>
     <p> Comments ({{post.comments.count()}}) </p>
     <div class="post">
     	<form action="{{url_for('show_post', post_id = post.id )}}" method="POST">
@@ -40,9 +42,12 @@
     		<p>
     			{{ comment.body }}
     		</p>
+    		{% if current_user.id == post.posted_by %}
+			<h6><a href="{{url_for('delete_comment', comment_id = comment.id)}}" class="float-right">&emsp; Delete</a></h6>
+			{% endif %}
     		<p><h6> Posted by: <a href="{{url_for('show_user', username = post.username)}}">{{ post.username }}</a></h6></p>
 
     	</div>
-	</div>
     {% endfor %}
+	</div>
 {% endblock %}

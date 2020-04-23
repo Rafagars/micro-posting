@@ -20,7 +20,7 @@
   text-decoration: none;
 }
 
-#posts .post {
+#posts .post, #show .post {
   box-sizing: content-box;
   border: 2px double #22272c;
   background-color: #2b3138;

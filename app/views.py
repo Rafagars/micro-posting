@@ -136,12 +136,11 @@ def show_post(post_id):
 		db.session.add(comment)
 		try:
 			db.session.commit()
+			return redirect(url_for('show_post', post_id = post.id))
 		except:
 			db.session.rollback()
 			return render_template("ShowPost.html", post = post, form = form, comments = comments)
-		finally:
-			db.session.close()
-			return redirect(url_for('index'))
+			
 	return render_template("ShowPost.html", post = post, form = form, comments = comments)
 
 
@@ -157,6 +156,18 @@ def delete_post(post_id):
 	except:
 		db.session.rollback()
 	return redirect(url_for('index'))
+
+@app.route("/delete_comment/<int:comment_id>")
+def delete_comment(comment_id):
+	comment = Comment.query.get(comment_id)
+	if comment is None:
+		abort(404, description="No comment was found with the given ID")
+	db.session.delete(comment)
+	try:
+		db.session.commit()
+	except:
+		db.session.rollback()
+	return redirect(url_for('show_post', post_id = comment.post_id))
 
 @app.route("/like/<int:post_id>/<action>")
 @login_required
