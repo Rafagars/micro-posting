@@ -1,6 +1,6 @@
-from app import app
-from app.models import User, Post, PostLike
-from app.forms import SignUpForm, LoginForm, NewPost, EditUser
+from app import app, db
+from app.models import User, Post, PostLike, Comment, CommentLike
+from app.forms import SignUpForm, LoginForm, NewPost, EditUser, CommentForm
 from flask import Flask, render_template, abort, redirect, url_for, request
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 
@@ -120,6 +120,27 @@ def edit_post(post_id):
 
 	return render_template("EditPost.html", post = post, form = form)
 
+@app.route("/show_post/<int:post_id>", methods = ["POST", "GET"])
+def show_post(post_id):
+	post = Post.get_by_id(post_id)
+	if post is None:
+		abort(404, description="No post was found with the given ID")
+	user = User.get_by_id(post.posted_by)
+	post.username = user.username
+	comments = Comment.query.order_by(Comment.id.desc()).all()
+	form = CommentForm()
+	if form.validate_on_submit():
+		comment = Comment(body = form.body.data, post_id = post.id, user_id = user.id)
+		try:
+			db.session.commit()
+		except:
+			db.session.rollback()
+			return render_template("ShowPost.html", post = post, form = form)
+		finally:
+			db.session.close()
+			return redirect(url_for('show_user', post_id = post.id))
+	return render_template("ShowPost.html", post = post, form = form)
+
 
 @app.route("/delete_post/<int:post_id>")
 @login_required
@@ -171,3 +192,4 @@ def edit_user(user_id):
 			message = "That's not your current password"
 			return render_template("EditUser.html", form = form, message = message)
 	return render_template("EditUser.html", form = form)
+

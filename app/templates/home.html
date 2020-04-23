@@ -16,13 +16,19 @@
 {% for post in posts %}
 	<br>
 	<div class="post">
-		<h2 class="">{{post.title}}</h2>
+		<h2 class=""><a href="{{ url_for('show_post', post_id=post.id) }}">{{post.title}}</a></h2>
 		<p>{{post.body}}</p>
 
-		{% if current_user.has_liked_post(post) %}
-		<p class="unlike"><a href="{{ url_for('like_action', post_id=post.id, action='unlike') }}" class="fas fa-heart"></a><span style="margin-left: 5px;">{{ post.likes.count() }}</span></p>
+		{% if current_user.has_liked(post) %}
+		<p class="unlike">
+			<a href="{{ url_for('like_action', post_id=post.id, action='unlike') }}" class="fas fa-heart"></a><span style="margin-left: 5px;">{{ post.likes.count() }}</span>
+			<a href="{{ url_for('show_post', post_id=post.id)}}" class="far fa-comment"></a><span style="margin-left: 5px;">{{ post.comments.count() }} comments </span>
+		</p>
 		{% else %}
-		<p class="like"><a href="{{ url_for('like_action', post_id=post.id, action='like') }}" class="far fa-heart"></a><span style="margin-left: 5px;">{{ post.likes.count() }}</span></p>
+		<p class="like">
+			<a href="{{ url_for('like_action', post_id=post.id, action='like') }}" class="far fa-heart"></a><span style="margin-left: 5px;">{{ post.likes.count() }}</span>
+			<a href="{{ url_for('show_post', post_id=post.id)}}" class="far fa-comment"><span>{{ post.comments.count() }} comments </span></a>
+		</p>
 		{% endif %}
 
 		{% if current_user.id == post.posted_by %}

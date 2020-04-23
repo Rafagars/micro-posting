@@ -17,24 +17,45 @@ class User(db.Model, UserMixin):
 	liked = db.relationship('PostLike',
                          foreign_keys='PostLike.user_id',
                          backref='user', lazy='dynamic')
+	comment_liked = db.relationship('CommentLike',
+								foreign_keys='CommentLike.user_id',
+								backref='user', lazy='dynamic')
 	
 	def like_post(self, post):
-		if not self.has_liked_post(post):
+		if not self.has_liked(post):
 			like = PostLike(user_id = self.id, post_id = post.id)
 			db.session.add(like)
 			
 	def unlike_post(self, post):
-		if self.has_liked_post(post):
+		if self.has_liked(post):
 			PostLike.query.filter_by(
 				user_id = self.id,
 				post_id = post.id
 			).delete()
+
+	def like_comment(self, comment):
+		if not self.has_liked(comment):
+			like = CommentLike(user_id = self.id, comment_id =comment.id)
+			db.session.add(like)
+
+	def unlike_comment(self, comment):
+		if self.has_liked(comment):
+			CommentLike.query.filter_by(
+				user_id = self.id,
+				comment_id = comment.id
+			).delete()
    
-	def has_liked_post(self, post):
-		return PostLike.query.filter(
-			PostLike.user_id == self.id,
-			PostLike.post_id == post.id
-		).count() > 0
+	def has_liked(self, post = None, comment = None):
+		if post != None:
+			return PostLike.query.filter(
+				PostLike.user_id == self.id,
+				PostLike.post_id == post.id
+			).count() > 0
+		if comment != None:
+			return CommentLike.query.filter(
+				CommentLike.user_id == self.id,
+				CommentLike.comment_id == comment.id
+			).count() > 0
  
 	def set_password(self, password):
 		self.password = generate_password_hash(password)
@@ -62,14 +83,34 @@ class Post(db.Model):
 	body = db.Column(db.Text)
 	posted_by = db.Column(db.Integer, db.ForeignKey('user.id'))
 	likes = db.relationship('PostLike', backref='post', lazy='dynamic')
+	comments = db.relationship('Comment', backref='post', lazy = 'dynamic')
+
+	@staticmethod
+	def get_by_id(id):
+		return Post.query.get(id)
  
-""" Model for Likes """
+""" Model for Post Likes """
 class PostLike(db.Model):
     __tablename__ = 'post_like'
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     post_id = db.Column(db.Integer, db.ForeignKey('post.id'))
 
+
+""" Model for Comments """
+class Comment(db.Model):
+	id = db.Column(db.Integer, primary_key = True)
+	body = db.Column(db.String)
+	user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+	post_id = db.Column(db.Integer, db.ForeignKey('post.id'))
+	likes = db.relationship('CommentLike', backref='comment', lazy='dynamic')
+
+""" Model for Comment Likes """
+class CommentLike(db.Model):
+	__tablename__ = 'comment_like'
+	id = db.Column(db.Integer, primary_key=True)
+	user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+	comment_id = db.Column(db.Integer, db.ForeignKey('comment.id'))
 
 db.create_all()
 
