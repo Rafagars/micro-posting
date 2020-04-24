@@ -150,6 +150,10 @@ def delete_post(post_id):
 	post = Post.query.get(post_id)
 	if post is None:
 		abort(404, description="No Post was Found with the given ID")
+	comments = Comment.query.filter_by(post_id = post.id).all()
+	for comment in comments:
+		db.session.delete(comment)
+
 	db.session.delete(post)
 	try:
 		db.session.commit()
