@@ -42,7 +42,7 @@
     		<p>
     			{{ comment.body }}
     		</p>
-    		{% if current_user.id == post.posted_by %}
+    		{% if current_user.id == comment.user_id %}
 			<h6><a href="{{url_for('delete_comment', comment_id = comment.id)}}" class="float-right">&emsp; Delete</a></h6>
 			{% endif %}
     		<p><h6> Posted by: <a href="{{url_for('show_user', username = post.username)}}">{{ post.username }}</a></h6></p>
