@@ -1,6 +1,6 @@
-from app import app
-from app.models import User, Post, PostLike
-from app.forms import SignUpForm, LoginForm, NewPost, EditUser
+from app import app, db
+from app.models import User, Post, PostLike, Comment, CommentLike
+from app.forms import SignUpForm, LoginForm, NewPost, EditUser, CommentForm
 from flask import Flask, render_template, abort, redirect, url_for, request
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 
@@ -120,6 +120,29 @@ def edit_post(post_id):
 
 	return render_template("EditPost.html", post = post, form = form)
 
+@app.route("/show_post/<int:post_id>", methods = ["POST", "GET"])
+def show_post(post_id):
+	post = Post.get_by_id(post_id)
+	if post is None:
+		abort(404, description="No post was found with the given ID")
+	user = User.get_by_id(post.posted_by)
+	post.username = user.username
+	comments = Comment.query.order_by(Comment.id.desc()).all()
+	for comment in comments:
+		comment.username = user.username
+	form = CommentForm()
+	if form.validate_on_submit():
+		comment = Comment(body = form.body.data, post_id = post.id, user_id = user.id)
+		db.session.add(comment)
+		try:
+			db.session.commit()
+			return redirect(url_for('show_post', post_id = post.id))
+		except:
+			db.session.rollback()
+			return render_template("ShowPost.html", post = post, form = form, comments = comments)
+			
+	return render_template("ShowPost.html", post = post, form = form, comments = comments)
+
 
 @app.route("/delete_post/<int:post_id>")
 @login_required
@@ -127,12 +150,28 @@ def delete_post(post_id):
 	post = Post.query.get(post_id)
 	if post is None:
 		abort(404, description="No Post was Found with the given ID")
+	comments = Comment.query.filter_by(post_id = post.id).all()
+	for comment in comments:
+		db.session.delete(comment)
+
 	db.session.delete(post)
 	try:
 		db.session.commit()
 	except:
 		db.session.rollback()
 	return redirect(url_for('index'))
+
+@app.route("/delete_comment/<int:comment_id>")
+def delete_comment(comment_id):
+	comment = Comment.query.get(comment_id)
+	if comment is None:
+		abort(404, description="No comment was found with the given ID")
+	db.session.delete(comment)
+	try:
+		db.session.commit()
+	except:
+		db.session.rollback()
+	return redirect(url_for('show_post', post_id = comment.post_id))
 
 @app.route("/like/<int:post_id>/<action>")
 @login_required
@@ -171,3 +210,4 @@ def edit_user(user_id):
 			message = "That's not your current password"
 			return render_template("EditUser.html", form = form, message = message)
 	return render_template("EditUser.html", form = form)
+

@@ -20,7 +20,15 @@
   text-decoration: none;
 }
 
-#posts .post {
+#posts .post, #show .post {
+  box-sizing: content-box;
+  border: 2px double #22272c;
+  background-color: #2b3138;
+  margin-bottom: 5px;
+  padding: 10px 15px;
+}
+
+#comments .comment {
   box-sizing: content-box;
   border: 2px double #22272c;
   background-color: #2b3138;

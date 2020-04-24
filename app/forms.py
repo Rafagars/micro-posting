@@ -29,3 +29,8 @@ class EditUser(FlaskForm):
 	confirm_password = PasswordField('Confirm New Password', validators = [InputRequired()])
 
 	submit = SubmitField('Change')
+
+class CommentForm(FlaskForm):
+	body = TextAreaField('Body', validators = [InputRequired()], render_kw={"rows": 5, "cols": 60})
+
+	submit = SubmitField('Comment')
