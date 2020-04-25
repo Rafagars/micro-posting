@@ -9,7 +9,7 @@
 {% endif %}
 
 {% if current_user.is_authenticated %}
-<a href="{{url_for('post')}}" class="btn btn-primary offset-5"> New Post</a>
+<a href="{{url_for('new_post')}}" class="btn btn-primary offset-5"> New Post</a>
 
 <div id="posts">
 			
@@ -27,7 +27,7 @@
 		{% else %}
 		<p class="like">
 			<a href="{{ url_for('like_action', post_id=post.id, action='like') }}" class="far fa-heart"></a><span style="margin-left: 5px;">{{ post.likes.count() }}</span>
-			<a href="{{ url_for('show_post', post_id=post.id)}}" class="far fa-comment"><span>{{ post.comments.count() }} comments </span></a>
+			<a href="{{ url_for('show_post', post_id=post.id)}}" class="far fa-comment"></a><span style="margin-left: 5px;">{{ post.comments.count() }} comments </span>
 		</p>
 		{% endif %}
 

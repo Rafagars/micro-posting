@@ -80,9 +80,9 @@ def logout():
 	logout_user()
 	return redirect(url_for('index'))
 
-@app.route("/post", methods = ["POST", "GET"])
+@app.route("/new_post", methods = ["POST", "GET"])
 @login_required
-def post():
+def new_post():
 	form = NewPost()
 	if form.validate_on_submit():
 		new_post = Post(title = form.title.data, body = form.body.data, posted_by = current_user.id)
@@ -120,7 +120,7 @@ def edit_post(post_id):
 
 	return render_template("EditPost.html", post = post, form = form)
 
-@app.route("/show_post/<int:post_id>", methods = ["POST", "GET"])
+@app.route("/post/<int:post_id>", methods = ["POST", "GET"])
 def show_post(post_id):
 	post = Post.get_by_id(post_id)
 	if post is None:
