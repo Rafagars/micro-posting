@@ -137,7 +137,7 @@ def show_post(post_id):
     if comments.has_prev else None
 	form = CommentForm()
 	if form.validate_on_submit():
-		comment = Comment(body = form.body.data, post_id = post.id, user_id = user.id)
+		comment = Comment(body = form.body.data, post_id = post.id, user_id = current_user.id)
 		db.session.add(comment)
 		try:
 			db.session.commit()
