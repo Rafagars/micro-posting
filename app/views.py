@@ -130,6 +130,7 @@ def show_post(post_id):
 	page = request.args.get('page', 1, type=int)
 	comments = Comment.query.order_by(Comment.id.desc()).paginate(page = page, per_page = 5, error_out = True)
 	for comment in comments.items:
+		user = User.get_by_id(comment.user_id)
 		comment.username = user.username
 	next_url = url_for('show_post', post_id = post.id, page=comments.next_num) \
 	if comments.has_next else None
