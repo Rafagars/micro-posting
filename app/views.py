@@ -32,7 +32,7 @@ def login():
 		redirect(url_for('index'))
 	form = LoginForm()
 	if form.validate_on_submit():
-		user = User.get_by_email(form.email.data)
+		user = User.get_by_email(form.email.data.capitalize())
 		#Checks if user exists and then checks user's password
 		if user is not None and user.check_password(form.password.data):
 			login_user(user, remember = form.remember_me.data)
@@ -52,8 +52,8 @@ def signup():
 	form = SignUpForm()
 	message = None
 	if form.validate_on_submit():
-		username = form.username.data
-		email = form.email.data
+		username = form.username.data.capitalize()
+		email = form.email.data.capitalize()
 		password = form.password.data
 
 		#Check if other user has this email
@@ -127,21 +127,27 @@ def show_post(post_id):
 		abort(404, description="No post was found with the given ID")
 	user = User.get_by_id(post.posted_by)
 	post.username = user.username
-	comments = Comment.query.order_by(Comment.id.desc()).all()
-	for comment in comments:
+	page = request.args.get('page', 1, type=int)
+	comments = Comment.query.order_by(Comment.id.desc()).paginate(page = page, per_page = 5, error_out = True)
+	for comment in comments.items:
+		user = User.get_by_id(comment.user_id)
 		comment.username = user.username
+	next_url = url_for('show_post', post_id = post.id, page=comments.next_num) \
+	if comments.has_next else None
+	prev_url = url_for('show_post', post_id =post.id, page=comments.prev_num) \
+    if comments.has_prev else None
 	form = CommentForm()
 	if form.validate_on_submit():
-		comment = Comment(body = form.body.data, post_id = post.id, user_id = user.id)
+		comment = Comment(body = form.body.data, post_id = post.id, user_id = current_user.id)
 		db.session.add(comment)
 		try:
 			db.session.commit()
 			return redirect(url_for('show_post', post_id = post.id))
 		except:
 			db.session.rollback()
-			return render_template("ShowPost.html", post = post, form = form, comments = comments)
+			return render_template("ShowPost.html", post = post, form = form, comments = comments.items, next_url = next_url, prev_url = prev_url)
 			
-	return render_template("ShowPost.html", post = post, form = form, comments = comments)
+	return render_template("ShowPost.html", post = post, form = form, comments = comments.items, next_url = next_url, prev_url = prev_url)
 
 
 @app.route("/delete_post/<int:post_id>")
