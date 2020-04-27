@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 from slugify import slugify
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy import exc
 import datetime
 
 from app import db
@@ -103,9 +103,12 @@ class Post(db.Model):
 			try:
 				db.session.commit()
 				saved = True
-			except IntegrityError:
+			except exc.IntegrityError:
 				count += 1
 				self.title_slug = f'{slugify(self.title)}-{count}'
+				db.session.rollback()
+				db.session.add(self)
+				db.session.flush()
 
 	def public_url(self):
 		return url_for('show_post', slug=self.title_slug)
