@@ -1,6 +1,10 @@
+from flask import url_for
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
+from slugify import slugify
+from sqlalchemy.exc import IntegrityError
+import datetime
 
 from app import db
 from app import app
@@ -80,14 +84,39 @@ class User(db.Model, UserMixin):
 class Post(db.Model):
 	id = db.Column(db.Integer, primary_key = True)
 	title = db.Column(db.String)
+	title_slug = db.Column(db.String, unique = True, nullable = False)
 	body = db.Column(db.Text)
 	posted_by = db.Column(db.Integer, db.ForeignKey('user.id'))
+	created = db.Column(db.DateTime, default = datetime.datetime.now)
 	likes = db.relationship('PostLike', backref='post', lazy='dynamic')
 	comments = db.relationship('Comment', backref='post', lazy = 'dynamic')
+
+	def save(self):
+		if not self.id:
+			db.session.add(self)
+		if not self.title_slug:
+			self.title_slug = slugify(self.title)
+
+		saved = False
+		count = 0
+		while not saved:
+			try:
+				db.session.commit()
+				saved = True
+			except:
+				count += 1
+				self.title_slug = f'{slugify(self.title)}-{count}'
+
+	def public_url(self):
+		return url_for('show_post', slug=self.title_slug)
 
 	@staticmethod
 	def get_by_id(id):
 		return Post.query.get(id)
+
+	@staticmethod
+	def get_by_slug(slug):
+		return Post.query.filter_by(title_slug = slug).first()
  
 """ Model for Post Likes """
 class PostLike(db.Model):
@@ -103,7 +132,13 @@ class Comment(db.Model):
 	body = db.Column(db.String)
 	user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 	post_id = db.Column(db.Integer, db.ForeignKey('post.id'))
+	created = db.Column(db.DateTime, default = datetime.datetime.now)
 	likes = db.relationship('CommentLike', backref='comment', lazy='dynamic')
+
+	def save(self):
+		if not self.id:
+			db.session.add(self)
+		db.session.commit()
 
 """ Model for Comment Likes """
 class CommentLike(db.Model):
