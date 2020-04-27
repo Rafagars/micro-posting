@@ -86,16 +86,8 @@ def new_post():
 	form = NewPost()
 	if form.validate_on_submit():
 		new_post = Post(title = form.title.data, body = form.body.data, posted_by = current_user.id)
-		db.session.add(new_post)
-		try:
-			db.session.commit()
-		except Exception as e:
-			print(e)
-			db.session.rollback()
-			return render_template("NewPost.html", form = form, message = "Error creating the Post")
-		finally:
-			db.session.close()
-			return redirect(url_for("index"))
+		new_post.save()
+		return redirect(url_for("index"))
 	return render_template("NewPost.html", form = form)
 
 @app.route("/edit_post/<int:post_id>", methods = ["POST", "GET"])
@@ -120,9 +112,9 @@ def edit_post(post_id):
 
 	return render_template("EditPost.html", post = post, form = form)
 
-@app.route("/post/<int:post_id>", methods = ["POST", "GET"])
-def show_post(post_id):
-	post = Post.get_by_id(post_id)
+@app.route("/post/<string:slug>", methods = ["POST", "GET"])
+def show_post(slug):
+	post = Post.get_by_slug(slug)
 	if post is None:
 		abort(404, description="No post was found with the given ID")
 	user = User.get_by_id(post.posted_by)
@@ -132,9 +124,9 @@ def show_post(post_id):
 	for comment in comments.items:
 		user = User.get_by_id(comment.user_id)
 		comment.username = user.username
-	next_url = url_for('show_post', post_id = post.id, page=comments.next_num) \
+	next_url = url_for('show_post', slug = post.title_slug, page=comments.next_num) \
 	if comments.has_next else None
-	prev_url = url_for('show_post', post_id =post.id, page=comments.prev_num) \
+	prev_url = url_for('show_post', slug = post.title_slug, page=comments.prev_num) \
     if comments.has_prev else None
 	form = CommentForm()
 	if form.validate_on_submit():
@@ -142,7 +134,7 @@ def show_post(post_id):
 		db.session.add(comment)
 		try:
 			db.session.commit()
-			return redirect(url_for('show_post', post_id = post.id))
+			return redirect(post.public_url())
 		except:
 			db.session.rollback()
 			return render_template("ShowPost.html", post = post, form = form, comments = comments.items, next_url = next_url, prev_url = prev_url)
@@ -169,6 +161,7 @@ def delete_post(post_id):
 @app.route("/delete_comment/<int:comment_id>")
 def delete_comment(comment_id):
 	comment = Comment.query.get(comment_id)
+	post = Post.get_by_id(comment.post_id)
 	if comment is None:
 		abort(404, description="No comment was found with the given ID")
 	db.session.delete(comment)
@@ -176,7 +169,7 @@ def delete_comment(comment_id):
 		db.session.commit()
 	except:
 		db.session.rollback()
-	return redirect(url_for('show_post', post_id = comment.post_id))
+	return redirect(post.public_url())
 
 @app.route("/like/<int:post_id>/<action>")
 @login_required
