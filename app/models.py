@@ -103,7 +103,7 @@ class Post(db.Model):
 			try:
 				db.session.commit()
 				saved = True
-			except:
+			except IntegrityError:
 				count += 1
 				self.title_slug = f'{slugify(self.title)}-{count}'
 
