@@ -187,7 +187,7 @@ def like_action(post_id, action):
 def show_user(username):
 	user = User.query.filter_by(username = username).first()
 	page = request.args.get('page', 1, type=int)
-	posts = Post.query.filter_by(posted_by = user.id).paginate(page = page, per_page = 5, error_out = True)
+	posts = Post.query.filter_by(posted_by = user.id).order_by(Post.id.desc()).paginate(page = page, per_page = 5, error_out = True)
 	next_url = url_for('show_user', username = user.username, page=posts.next_num) \
 	if posts.has_next else None
 	prev_url = url_for('show_user', username = user.username, page=posts.prev_num) \
