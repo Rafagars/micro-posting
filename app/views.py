@@ -56,7 +56,7 @@ def signup():
 		email = form.email.data.capitalize()
 		password = form.password.data
 
-		#Check if other user has this email
+		#Check if other user has this email or username
 		user_email = User.get_by_email(email)
 		user_name = User.query.filter_by(username = username).first()
 		if user_email is not None or user_name is not None:
