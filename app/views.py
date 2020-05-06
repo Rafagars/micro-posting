@@ -57,9 +57,13 @@ def signup():
 		password = form.password.data
 
 		#Check if other user has this email
-		user = User.get_by_email(email)
-		if user is not None:
-			message = f'El email {email} ya esta en uso'
+		user_email = User.get_by_email(email)
+		user_name = User.query.filter_by(username = username).first()
+		if user_email is not None or user_name is not None:
+			if user_email is not None:
+				message = f'The email {email} already registered'
+			else:
+				message = f'Username {username} already taken'
 		else:
 			#Create user and save it
 			user = User(username = username, email = email)
