@@ -128,6 +128,7 @@ def show_post(slug):
 	for comment in comments.items:
 		user = User.get_by_id(comment.user_id)
 		comment.username = user.username
+		comment.email = user.email
 	next_url = url_for('show_post', slug = post.title_slug, page=comments.next_num) \
 	if comments.has_next else None
 	prev_url = url_for('show_post', slug = post.title_slug, page=comments.prev_num) \

@@ -143,6 +143,10 @@ class Comment(db.Model):
 	created = db.Column(db.DateTime, default = datetime.datetime.now)
 	likes = db.relationship('CommentLike', backref='comment', lazy='dynamic')
 
+	def avatar(self, size):
+		digest = md5(self.email.lower().encode('utf-8')).hexdigest()
+		return 'https://www.gravatar.com/avatar/{}?d=identicon&s={}'.format(digest, size)
+
 	def save(self):
 		if not self.id:
 			db.session.add(self)

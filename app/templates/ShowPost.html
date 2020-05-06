@@ -42,6 +42,7 @@
     {% for comment in comments %}
     	<div class="comment">
     		<p>
+    			<img src="{{ comment.avatar(80) }}" style="margin-right: 5px;">
     			{{ comment.body }}
     		</p>
     		{% if current_user.id == comment.user_id %}
