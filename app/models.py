@@ -4,6 +4,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 from slugify import slugify
 from sqlalchemy import exc
+from hashlib import md5
 import datetime
 
 from app import db
@@ -60,6 +61,10 @@ class User(db.Model, UserMixin):
 				CommentLike.user_id == self.id,
 				CommentLike.comment_id == comment.id
 			).count() > 0
+
+	def avatar(self, size):
+		digest = md5(self.email.lower().encode('utf-8')).hexdigest()
+		return 'https://www.gravatar.com/avatar/{}?d=identicon&s={}'.format(digest, size)
  
 	def set_password(self, password):
 		self.password = generate_password_hash(password)
