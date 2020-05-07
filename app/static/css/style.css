@@ -33,11 +33,7 @@
   border: 2px double #22272c;
   background-color: #2b3138;
   margin-bottom: 5px;
-  padding: 10px 15px;
-}
-
-#c-body {
-  margin-left: 5px;
+  padding: 5px 10px;
 }
 
 #login, #signup {

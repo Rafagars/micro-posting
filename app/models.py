@@ -52,13 +52,11 @@ class User(db.Model, UserMixin):
    
 	def has_liked(self, post = None, comment = None):
 		if post != None:
-			print(post)
 			return PostLike.query.filter(
 				PostLike.user_id == self.id,
 				PostLike.post_id == post.id
 			).count() > 0
 		if comment != None:
-			print("Comment")
 			return CommentLike.query.filter(
 				CommentLike.user_id == self.id,
 				CommentLike.comment_id == comment.id
