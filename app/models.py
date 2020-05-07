@@ -39,12 +39,12 @@ class User(db.Model, UserMixin):
 			).delete()
 
 	def like_comment(self, comment):
-		if not self.has_liked(comment):
-			like = CommentLike(user_id = self.id, comment_id =comment.id)
+		if not self.has_liked(None, comment):
+			like = CommentLike(user_id = self.id, comment_id = comment.id)
 			db.session.add(like)
 
 	def unlike_comment(self, comment):
-		if self.has_liked(comment):
+		if self.has_liked(None ,comment):
 			CommentLike.query.filter_by(
 				user_id = self.id,
 				comment_id = comment.id
@@ -52,11 +52,13 @@ class User(db.Model, UserMixin):
    
 	def has_liked(self, post = None, comment = None):
 		if post != None:
+			print(post)
 			return PostLike.query.filter(
 				PostLike.user_id == self.id,
 				PostLike.post_id == post.id
 			).count() > 0
 		if comment != None:
+			print("Comment")
 			return CommentLike.query.filter(
 				CommentLike.user_id == self.id,
 				CommentLike.comment_id == comment.id

@@ -188,6 +188,18 @@ def like_action(post_id, action):
         db.session.commit()
     return redirect(request.referrer)
 
+@app.route("/comment_like/<int:comment_id>/<action>")
+@login_required
+def comment_like(comment_id, action):
+    comment = Comment.query.filter_by(id = comment_id).first_or_404()
+    if action == 'like':
+        current_user.like_comment(comment)
+        db.session.commit()
+    if action == 'unlike':
+        current_user.unlike_comment(comment)
+        db.session.commit()
+    return redirect(request.referrer)
+
 @app.route("/user/<username>")
 def show_user(username):
 	user = User.query.filter_by(username = username).first()
