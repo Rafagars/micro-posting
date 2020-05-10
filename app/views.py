@@ -16,6 +16,7 @@ def load_user(user_id):
 def index():
 	page = request.args.get('page', 1, type=int)
 	posts = Post.query.order_by(Post.id.desc()).paginate(page = page, per_page = 5, error_out = True)
+	# Url variables for the pagination
 	next_url = url_for('index', page=posts.next_num) \
 	if posts.has_next else None
 	prev_url = url_for('index', page=posts.prev_num) \
@@ -98,8 +99,9 @@ def new_post():
 @login_required
 def edit_post(post_id):
 	post = Post.query.get(post_id)
-	form = NewPost(obj=post)
+	form = NewPost(obj=post) #obj=post so that way the content of the post appears in the form
 	if post is None:
+		#In case that the user try to edit a post that doesn't exist
 		abort(404, description="No Post was found with the given ID")
 	if form.validate_on_submit():
 		post.title = form.title.data
@@ -127,8 +129,11 @@ def show_post(slug):
 	comments = Comment.query.order_by(Comment.id.desc()).paginate(page = page, per_page = 5, error_out = True)
 	for comment in comments.items:
 		user = User.get_by_id(comment.user_id)
+		# I don't want to store this elements in the database but I need them in the front end
 		comment.username = user.username
+		# Email needed for the user's avatar
 		comment.email = user.email
+	# Url variables for the pagination
 	next_url = url_for('show_post', slug = post.title_slug, page=comments.next_num) \
 	if comments.has_next else None
 	prev_url = url_for('show_post', slug = post.title_slug, page=comments.prev_num) \
@@ -153,6 +158,7 @@ def delete_post(post_id):
 	post = Post.query.get(post_id)
 	if post is None:
 		abort(404, description="No Post was Found with the given ID")
+	#To delete all post's comments with it	
 	comments = Comment.query.filter_by(post_id = post.id).all()
 	for comment in comments:
 		db.session.delete(comment)
@@ -205,6 +211,7 @@ def show_user(username):
 	user = User.query.filter_by(username = username).first()
 	page = request.args.get('page', 1, type=int)
 	posts = Post.query.filter_by(posted_by = user.id).order_by(Post.id.desc()).paginate(page = page, per_page = 5, error_out = True)
+	# Url variables for the pagination
 	next_url = url_for('show_user', username = user.username, page=posts.next_num) \
 	if posts.has_next else None
 	prev_url = url_for('show_user', username = user.username, page=posts.prev_num) \
