@@ -27,6 +27,16 @@
 
 	<div class="container">
 	<br>
+	{% with messages = get_flashed_messages() %}
+	{% if messages %}
+		<ul class="alert alert-success">
+			{% for message in messages %}
+				<li> {{message}} </li>
+			{% endfor %}
+		</ul>
+	{% endif%}
+	{% endwith %}
+
 	{% block content %}
 	{% endblock %}	
 	</div>
@@ -38,5 +48,6 @@
 	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
 	<script type="text/javascript" src="{{url_for('static', filename='js/bootstrap.min.js')}}"></script>
 	<script src="{{url_for('static', filename='js/post.js')}}"></script>
+    {{ moment.include_moment() }}
 </body>
 </html>

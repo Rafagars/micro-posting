@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 alabaster==0.7.12
 anaconda-client==1.7.2
 anaconda-navigator==1.9.12
@@ -234,3 +235,35 @@ xmltodict==0.12.0
 yapf==0.28.0
 zict==1.0.0
 zipp==2.2.0
+=======
+alembic==1.4.2
+astroid==2.3.3
+click==7.1.1
+dnspython==1.16.0
+email-validator==1.0.5
+Flask==1.1.2
+Flask-Login==0.5.0
+Flask-Migrate==2.5.3
+Flask-Moment==0.9.0
+Flask-SQLAlchemy==2.4.1
+Flask-WTF==0.14.3
+idna==2.9
+isort==4.3.21
+itsdangerous==1.1.0
+Jinja2==2.11.2
+lazy-object-proxy==1.4.3
+Mako==1.1.2
+MarkupSafe==1.1.1
+mccabe==0.6.1
+pylint==2.4.4
+python-dateutil==2.8.1
+python-editor==1.0.4
+python-slugify==4.0.0
+six==1.14.0
+SQLAlchemy==1.3.16
+text-unidecode==1.3
+typed-ast==1.4.1
+Werkzeug==1.0.1
+wrapt==1.11.2
+WTForms==2.3.1
+>>>>>>> a56b5f050a076aaa0aeb8ea20fde82a6afde8279

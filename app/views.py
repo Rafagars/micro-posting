@@ -1,7 +1,7 @@
 from app import app, db
 from app.models import User, Post, PostLike, Comment, CommentLike
 from app.forms import SignUpForm, LoginForm, NewPost, EditUser, CommentForm
-from flask import Flask, render_template, abort, redirect, url_for, request
+from flask import Flask, flash, render_template, abort, redirect, url_for, request
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 
 login_manager = LoginManager(app)
@@ -16,6 +16,7 @@ def load_user(user_id):
 def index():
 	page = request.args.get('page', 1, type=int)
 	posts = Post.query.order_by(Post.id.desc()).paginate(page = page, per_page = 5, error_out = True)
+	# Url variables for the pagination
 	next_url = url_for('index', page=posts.next_num) \
 	if posts.has_next else None
 	prev_url = url_for('index', page=posts.prev_num) \
@@ -39,6 +40,7 @@ def login():
 			next_page = request.args.get('next')
 			if not next_page or url_parse(next_page).netloc != '':
 				next_page = url_for('index')
+			flash('Welcome back')
 			return redirect(next_page)
 		else:
 			message = "Sorry, wrong email or pasword" 
@@ -74,6 +76,7 @@ def signup():
 			next_page = request.args.get('next', None)
 			if not next_page or url_parse(next_page).netloc != '':
 				next_page = url_for('index')
+			flash('Welcome to Micro-Posting')
 			return redirect(next_page)
 	return render_template('Signup.html', form = form, message = message)
 
@@ -84,22 +87,24 @@ def logout():
 	logout_user()
 	return redirect(url_for('index'))
 
-@app.route("/new_post", methods = ["POST", "GET"])
+@app.route("/post/new", methods = ["POST", "GET"])
 @login_required
 def new_post():
 	form = NewPost()
 	if form.validate_on_submit():
 		new_post = Post(title = form.title.data, body = form.body.data, posted_by = current_user.id)
 		new_post.save()
+		flash('Post created')
 		return redirect(url_for("index"))
 	return render_template("NewPost.html", form = form)
 
-@app.route("/edit_post/<int:post_id>", methods = ["POST", "GET"])
+@app.route("/post/edit/<int:post_id>", methods = ["POST", "GET"])
 @login_required
 def edit_post(post_id):
 	post = Post.query.get(post_id)
-	form = NewPost(obj=post)
+	form = NewPost(obj=post) #obj=post so that way the content of the post appears in the form
 	if post is None:
+		#In case that the user try to edit a post that doesn't exist
 		abort(404, description="No Post was found with the given ID")
 	if form.validate_on_submit():
 		post.title = form.title.data
@@ -112,11 +117,12 @@ def edit_post(post_id):
 			return render_template("EditPost.html", post = post, form = form, message = "Error editing the Post")
 		finally:
 			db.session.close()
+			flash('Post edited')
 			return redirect(url_for("index"))
 
 	return render_template("EditPost.html", post = post, form = form)
 
-@app.route("/post/<string:slug>", methods = ["POST", "GET"])
+@app.route("/post/show/<string:slug>", methods = ["POST", "GET"])
 def show_post(slug):
 	post = Post.get_by_slug(slug)
 	if post is None:
@@ -127,8 +133,11 @@ def show_post(slug):
 	comments = Comment.query.order_by(Comment.id.desc()).paginate(page = page, per_page = 5, error_out = True)
 	for comment in comments.items:
 		user = User.get_by_id(comment.user_id)
+		# I don't want to store this elements in the database but I need them in the front end
 		comment.username = user.username
+		# Email needed for the user's avatar
 		comment.email = user.email
+	# Url variables for the pagination
 	next_url = url_for('show_post', slug = post.title_slug, page=comments.next_num) \
 	if comments.has_next else None
 	prev_url = url_for('show_post', slug = post.title_slug, page=comments.prev_num) \
@@ -153,12 +162,14 @@ def delete_post(post_id):
 	post = Post.query.get(post_id)
 	if post is None:
 		abort(404, description="No Post was Found with the given ID")
+	#To delete all post's comments with it	
 	comments = Comment.query.filter_by(post_id = post.id).all()
 	for comment in comments:
 		db.session.delete(comment)
 	db.session.delete(post)
 	try:
 		db.session.commit()
+		flash('Post deleted')
 	except:
 		db.session.rollback()
 	return redirect(url_for('index'))
@@ -172,6 +183,7 @@ def delete_comment(comment_id):
 	db.session.delete(comment)
 	try:
 		db.session.commit()
+		flash('Comment deleted')
 	except:
 		db.session.rollback()
 	return redirect(post.public_url())
@@ -205,13 +217,14 @@ def show_user(username):
 	user = User.query.filter_by(username = username).first()
 	page = request.args.get('page', 1, type=int)
 	posts = Post.query.filter_by(posted_by = user.id).order_by(Post.id.desc()).paginate(page = page, per_page = 5, error_out = True)
+	# Url variables for the pagination
 	next_url = url_for('show_user', username = user.username, page=posts.next_num) \
 	if posts.has_next else None
 	prev_url = url_for('show_user', username = user.username, page=posts.prev_num) \
     if posts.has_prev else None
 	return render_template("ShowUser.html", posts = posts.items, user = user, next_url = next_url, prev_url = prev_url)
 
-@app.route("/edit_user/<int:user_id>", methods = ['POST', 'GET'])
+@app.route("/user/edit/<int:user_id>", methods = ['POST', 'GET'])
 @login_required
 def edit_user(user_id):
 	form = EditUser()
@@ -220,6 +233,7 @@ def edit_user(user_id):
 		if user.check_password(form.current_password.data):
 			user.set_password(form.new_password.data)
 			user.save()
+			flash('Password changed succesfully')
 			return redirect(url_for('index'))
 		else:
 			message = "That's not your current password"

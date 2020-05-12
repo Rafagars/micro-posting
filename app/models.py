@@ -38,18 +38,20 @@ class User(db.Model, UserMixin):
 				post_id = post.id
 			).delete()
 
+	#Since has_liked is for posts and comment, we specified that the post as None		
 	def like_comment(self, comment):
 		if not self.has_liked(None, comment):
 			like = CommentLike(user_id = self.id, comment_id = comment.id)
 			db.session.add(like)
 
-	def unlike_comment(self, comment):
+	def unlike_comment(self, comment): 
 		if self.has_liked(None ,comment):
 			CommentLike.query.filter_by(
 				user_id = self.id,
 				comment_id = comment.id
 			).delete()
    
+   	#Only one function to check is the user already liked the post or comment
 	def has_liked(self, post = None, comment = None):
 		if post != None:
 			return PostLike.query.filter(
@@ -104,6 +106,7 @@ class Post(db.Model):
 
 		saved = False
 		count = 0
+		#In case that a post with the same title exist
 		while not saved:
 			try:
 				db.session.commit()
@@ -111,6 +114,7 @@ class Post(db.Model):
 			except exc.IntegrityError:
 				count += 1
 				self.title_slug = f'{slugify(self.title)}-{count}'
+				# To avoid a server error
 				db.session.rollback()
 				db.session.add(self)
 				db.session.flush()

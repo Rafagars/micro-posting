@@ -36,7 +36,7 @@
 			<h6><a href="{{url_for('delete_post', post_id = post.id)}}" class="float-right">&emsp; Delete</a></h6>
 			<h6><a href="{{url_for('edit_post', post_id = post.id)}}" class="float-right"> Edit</a></h6>
 			{% endif %}
-			<h6>Created at: {{post.created}} </h6>
+			<h6>Created {{ moment(post.created).fromNow() }} </h6>
 		</p>
 
 

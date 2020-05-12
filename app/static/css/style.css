@@ -11,7 +11,11 @@
   color: white;
 }
 
+<<<<<<< HEAD
 #header a:hover {
+=======
+#header a:hover{
+>>>>>>> a56b5f050a076aaa0aeb8ea20fde82a6afde8279
   color: gray;
 }
 
