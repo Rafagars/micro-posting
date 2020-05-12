@@ -4,13 +4,12 @@
 
 {% block content %}
 
-<img src="{{ user.avatar(100) }}" class="float-left">
+<img src="{{ user.avatar(100) }}" class="float-left" style="margin-right: 5px">
 <h1> {{ user.username }}'s Profile </h1>
 {% if current_user.id == user.id %}
-<h6><a href="{{url_for('edit_user', user_id = current_user.id)}}" class="float-right"> Change Password</a></h6>
+<h6><a href="https://gravatar.com/emails" target="_blank">Change Avatar</a></h6>
+<h6><a href="{{url_for('edit_user', user_id = current_user.id)}}"> Change Password</a></h6>
 {% endif %}
-
-<br>
 
 <div id="posts">
 	{% for post in posts %}
@@ -48,10 +47,10 @@
 	<nav aria-label="Page navigation">
 		<ul class="pagination">
 		{% if prev_url %}
-    	<li class="page-item"><a href="{{ prev_url }}">Newer posts</a></li>
+    	<li class="page-item"><a class="page-link" href="{{ prev_url }}">Newer posts</a></li>
     	{% endif %}
     	{% if next_url %}
-    	<li class="page-item"><a href="{{ next_url }}">Older posts</a></li>
+    	<li class="page-item"><a class="page-link" href="{{ next_url }}">Older posts</a></li>
     	{% endif %}
 		</ul>
 	</nav>
