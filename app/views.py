@@ -1,7 +1,7 @@
 from app import app, db
 from app.models import User, Post, PostLike, Comment, CommentLike
 from app.forms import SignUpForm, LoginForm, NewPost, EditUser, CommentForm
-from flask import Flask, render_template, abort, redirect, url_for, request
+from flask import Flask, flash, render_template, abort, redirect, url_for, request
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 
 login_manager = LoginManager(app)
@@ -40,6 +40,7 @@ def login():
 			next_page = request.args.get('next')
 			if not next_page or url_parse(next_page).netloc != '':
 				next_page = url_for('index')
+			flash('Welcome back')
 			return redirect(next_page)
 		else:
 			message = "Sorry, wrong email or pasword" 
@@ -75,6 +76,7 @@ def signup():
 			next_page = request.args.get('next', None)
 			if not next_page or url_parse(next_page).netloc != '':
 				next_page = url_for('index')
+			flash('Welcome to Micro-Posting')
 			return redirect(next_page)
 	return render_template('Signup.html', form = form, message = message)
 
@@ -85,17 +87,18 @@ def logout():
 	logout_user()
 	return redirect(url_for('index'))
 
-@app.route("/new_post", methods = ["POST", "GET"])
+@app.route("/post/new", methods = ["POST", "GET"])
 @login_required
 def new_post():
 	form = NewPost()
 	if form.validate_on_submit():
 		new_post = Post(title = form.title.data, body = form.body.data, posted_by = current_user.id)
 		new_post.save()
+		flash('Post created')
 		return redirect(url_for("index"))
 	return render_template("NewPost.html", form = form)
 
-@app.route("/edit_post/<int:post_id>", methods = ["POST", "GET"])
+@app.route("/post/edit/<int:post_id>", methods = ["POST", "GET"])
 @login_required
 def edit_post(post_id):
 	post = Post.query.get(post_id)
@@ -114,11 +117,12 @@ def edit_post(post_id):
 			return render_template("EditPost.html", post = post, form = form, message = "Error editing the Post")
 		finally:
 			db.session.close()
+			flash('Post edited')
 			return redirect(url_for("index"))
 
 	return render_template("EditPost.html", post = post, form = form)
 
-@app.route("/post/<string:slug>", methods = ["POST", "GET"])
+@app.route("/post/show/<string:slug>", methods = ["POST", "GET"])
 def show_post(slug):
 	post = Post.get_by_slug(slug)
 	if post is None:
@@ -165,6 +169,7 @@ def delete_post(post_id):
 	db.session.delete(post)
 	try:
 		db.session.commit()
+		flash('Post deleted')
 	except:
 		db.session.rollback()
 	return redirect(url_for('index'))
@@ -178,6 +183,7 @@ def delete_comment(comment_id):
 	db.session.delete(comment)
 	try:
 		db.session.commit()
+		flash('Comment deleted')
 	except:
 		db.session.rollback()
 	return redirect(post.public_url())
@@ -218,7 +224,7 @@ def show_user(username):
     if posts.has_prev else None
 	return render_template("ShowUser.html", posts = posts.items, user = user, next_url = next_url, prev_url = prev_url)
 
-@app.route("/edit_user/<int:user_id>", methods = ['POST', 'GET'])
+@app.route("/user/edit/<int:user_id>", methods = ['POST', 'GET'])
 @login_required
 def edit_user(user_id):
 	form = EditUser()
@@ -227,6 +233,7 @@ def edit_user(user_id):
 		if user.check_password(form.current_password.data):
 			user.set_password(form.new_password.data)
 			user.save()
+			flash('Password changed succesfully')
 			return redirect(url_for('index'))
 		else:
 			message = "That's not your current password"
