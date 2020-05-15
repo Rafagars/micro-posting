@@ -18,6 +18,7 @@ class User(db.Model, UserMixin):
 	username = db.Column(db.String, unique = True)
 	email = db.Column(db.String, unique = True)
 	password = db.Column(db.String)
+	admin = db.Column(db.Boolean, default = False)
 	post = db.relationship('Post', backref = 'user')
 	liked = db.relationship('PostLike',
                          foreign_keys='PostLike.user_id',

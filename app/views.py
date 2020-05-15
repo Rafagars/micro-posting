@@ -3,6 +3,7 @@ from app.models import User, Post, PostLike, Comment, CommentLike
 from app.forms import SignUpForm, LoginForm, NewPost, EditUser, CommentForm
 from flask import Flask, flash, render_template, abort, redirect, url_for, request
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
+from werkzeug.urls import url_parse
 
 login_manager = LoginManager(app)
 login_manager.init_app(app)
@@ -71,6 +72,9 @@ def signup():
 			user = User(username = username, email = email)
 			user.set_password(password)
 			user.save()
+			if user.id == 1: 
+				user.admin = True
+				db.session.commit()
 			#Log in the user
 			login_user(user, remember = True)
 			next_page = request.args.get('next', None)
