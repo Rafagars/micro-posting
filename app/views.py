@@ -1,9 +1,11 @@
-from app import app, db
-from app.models import User, Post, PostLike, Comment, CommentLike
-from app.forms import SignUpForm, LoginForm, NewPost, EditUser, CommentForm
-from flask import Flask, flash, render_template, abort, redirect, url_for, request
+from app import app, db, socketio
+from app.models import User, Post, PostLike, Comment, CommentLike, Room, RoomMessage
+from app.forms import SignUpForm, LoginForm, NewPost, EditUser, CommentForm, RoomForm, MessageForm
+from flask import Flask, flash, render_template, abort, redirect, url_for, request, session
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from werkzeug.urls import url_parse
+from flask_socketio import emit, join_room, leave_room
+
 
 login_manager = LoginManager(app)
 login_manager.init_app(app)
@@ -243,4 +245,26 @@ def edit_user(user_id):
 			message = "That's not your current password"
 			return render_template("EditUser.html", form = form, message = message)
 	return render_template("EditUser.html", form = form)
+
+@app.route("/chat/rooms")
+def rooms():
+	rooms = Room.query.all()
+	return render_template("Rooms.html", rooms = rooms)
+
+@app.route("/chat/rooms/new")
+def new_room():
+	form = RoomForm()
+	if form.validate_on_submit():
+		room = Room(name = form.name.data)
+		db.session.add(room)
+		db.session.commit()
+		flash('Room created successfully')
+		return redirect(url_for('rooms'))
+
+	return render_template('NewRoom.html', form = form)
+
+@app.route("/chat/rooms/<string:name>")
+def chat(name):
+	room = Room.query.filter_by(name = name).first()
+	return render_template('Chat.html', room = room)
 
