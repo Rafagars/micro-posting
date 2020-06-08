@@ -24,7 +24,7 @@
             <h6><a href="{{url_for('delete_post', post_id = post.id)}}" class="float-right">&emsp; Delete</a></h6>
             <h6><a href="{{url_for('edit_post', post_id = post.id)}}" class="float-right"> Edit</a></h6>
             {% endif %}
-            <h6> Posted by: <a href="{{url_for('show_user', username = post.username)}}">{{ post.username }}</a> <span> Created {{ moment(post.created).fromNow() }} </span></h6>
+            <small> Posted by: <a href="{{url_for('show_user', username = post.username)}}">{{ post.username }}</a> <span> Created {{ moment(post.created).fromNow() }} </span></small>
             
         </p>
     </div>
@@ -59,9 +59,9 @@
                     <h6><a href="{{url_for('delete_comment', comment_id = comment.id)}}" class="float-right">&emsp; Delete</a></h6>
                     {% endif %}
                     
-                    <h6> 
-                        <span> Created  {{moment(comment.created).fromNow() }}</span>
-                    </h6>
+                    <p> 
+                        <small> Created  {{moment(comment.created).fromNow() }}</small>
+                    </p>
                     
                 </div>
             </p>
