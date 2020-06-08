@@ -142,7 +142,7 @@ class PostLike(db.Model):
 """ Model for Comments """
 class Comment(db.Model):
 	id = db.Column(db.Integer, primary_key = True)
-	body = db.Column(db.String)
+	body = db.Column(db.Text)
 	user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 	post_id = db.Column(db.Integer, db.ForeignKey('post.id'))
 	created = db.Column(db.DateTime, default = datetime.datetime.now)
