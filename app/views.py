@@ -1,10 +1,10 @@
-from app import app, db, socketio
+from app import app, db
 from app.models import User, Post, PostLike, Comment, CommentLike, Room, RoomMessage
 from app.forms import SignUpForm, LoginForm, NewPost, EditUser, CommentForm, RoomForm, MessageForm
 from flask import Flask, flash, render_template, abort, redirect, url_for, request, session
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from werkzeug.urls import url_parse
-from flask_socketio import emit, join_room, leave_room
+
 
 
 login_manager = LoginManager(app)
