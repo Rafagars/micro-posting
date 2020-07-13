@@ -121,3 +121,7 @@ header a:hover {
 .far, .fas{
   margin-right: 5px;
 }
+
+.fa-comment, .fa-trash {
+  margin-left: 10px;
+}
