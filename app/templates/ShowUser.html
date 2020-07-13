@@ -16,13 +16,16 @@
 <h6><a href="{{url_for('edit_user', user_id = current_user.id)}}"> Change Password</a></h6>
 {% endif %}
 
-<div id="posts">
+<div>
 	{% for post in posts %}
 	<br>
 	<div class="post">
 
 		<h2 class=""><a href="{{ post.public_url() }}">{{post.title}}</a> </h2>
-		<p>{{post.body}}</p>
+		
+		<div class="">
+			<p>{{post.body|safe}}</p>
+		</div>
 
 		{% if current_user.has_liked(post) %}
 		<p class="unlike">

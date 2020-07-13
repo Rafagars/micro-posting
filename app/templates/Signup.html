@@ -5,7 +5,7 @@ Sign-Up
 {% endblock %}
 
 {% block content %}
-<div id="signup" class="mx-auto d-block">
+<div id="signup" class="mx-auto text-center">
 <h1>Sign Up</h1>
 {% if message %}
 <div class="alert alert-danger" role="alert">
@@ -15,6 +15,7 @@ Sign-Up
 
 {% if form %}
 <form action="{{url_for('signup')}}" method="POST">
+    {{ form.csrf_token }}
     <!-- Full Name Field -->
     <label class="label"><i class="fas fa-user"></i></label>
     {{ form.username(placeholder="Username", style="color:white;") }} 

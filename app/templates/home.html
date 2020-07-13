@@ -9,33 +9,37 @@
 {% endif %}
 
 {% if current_user.is_authenticated %}
-<a href="{{url_for('new_post')}}" class="btn btn-primary offset-5"> New Post</a>
+<div class="text-center">
+	<a href="{{url_for('new_post')}}" class="btn btn-primary"> New Post</a>
+</div>
 
-<div id="posts">
+<div>
 			
 {% for post in posts %}
 	<br>
-	<div class="post">
-		<h2 class=""><a href="{{ post.public_url() }}">{{post.title}}</a></h2>
-		<p>{{post.body}}</p>
-
-		{% if current_user.has_liked(post) %}
-		<p class="unlike">
-			<a href="{{ url_for('like_action', post_id=post.id, action='unlike') }}" class="fas fa-heart"></a><span style="margin-left: 5px;">{{ post.likes.count() }}</span>
-			<a href="{{ post.public_url() }}" class="far fa-comment"></a><span style="margin-left: 5px;">{{ post.comments.count() }} comments </span>
-		</p>
-		{% else %}
-		<p class="like">
-			<a href="{{ url_for('like_action', post_id=post.id, action='like') }}" class="far fa-heart"></a><span style="margin-left: 5px;">{{ post.likes.count() }}</span>
-			<a href="{{ post.public_url() }}" class="far fa-comment"></a><span style="margin-left: 5px;">{{ post.comments.count() }} comments </span>
-		</p>
-		{% endif %}
-
-		<p>
+	<div class="post col-lg-10 col-12 mx-auto ">
+		<div class="float-right">
 			{% if current_user.id == post.posted_by or current_user.admin %}
-			<h6><a href="{{url_for('delete_post', post_id = post.id)}}" class="float-right">&emsp; Delete</a></h6>
-			<h6><a href="{{url_for('edit_post', post_id = post.id)}}" class="float-right"> Edit</a></h6>
+			<a href="{{url_for('edit_post', post_id = post.id)}}" class="fas fa-edit"></a>
+			<a href="{{url_for('delete_post', post_id = post.id)}}" class="fas fa-trash"></a>
 			{% endif %}
+		</div>
+		<h2 class=""><a href="{{ post.public_url() }}">{{post.title}}</a></h2>
+		
+		<div class="">
+			<p>{{post.body|safe}}</p>
+		</div>
+
+		<div class="">
+			{% if current_user.has_liked(post) %}
+			<a href="{{ url_for('like_action', post_id=post.id, action='unlike') }}" class="unlike fas fa-heart"></a><span>{{ post.likes.count() }}</span>
+			{% else %}
+			<a href="{{ url_for('like_action', post_id=post.id, action='like') }}" class="like far fa-heart"></a><span>{{ post.likes.count() }}</span>
+			{% endif %}
+			<a href="{{ post.public_url() }}" class="far fa-comment"></a><span>{{ post.comments.count() }} </span>
+		</div>
+		
+		<p>
 			<small> Posted by: <a href="{{url_for('show_user', username = post.username)}}">{{ post.username }}</a> <span> Created {{ moment(post.created).fromNow() }}  </span></small>
 			
 		</p>

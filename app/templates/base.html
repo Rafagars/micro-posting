@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,7 +9,7 @@
 	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css">
 </head>
 <body id="body">
-	<header id="header" class="navbar navbar-fixed-top navbar-inverse">
+	<header class="navbar navbar-fixed-top navbar-inverse">
 		<div class="container">
     		<h1><a href="{{url_for('index')}}">Micro-Posting</a></h1>
     <nav>
@@ -44,6 +45,13 @@
 	<footer id="footer">
 	</footer>
 	
+	<script src="https://cdn.tiny.cloud/1/sfek8dpwib0red5yvsnxdx27a6e3cqhmo3prb7zti40k7wyu/tinymce/5/tinymce.min.js" referrerpolicy="origin"/></script>
+	<script>
+		tinymce.init({
+		  selector: '#mytextarea',
+		  width: "100%",
+		});
+	  </script>
 	<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
 	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
 	<script type="text/javascript" src="{{url_for('static', filename='js/bootstrap.min.js')}}"></script>

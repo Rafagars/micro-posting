@@ -244,3 +244,18 @@ def edit_user(user_id):
 			return render_template("EditUser.html", form = form, message = message)
 	return render_template("EditUser.html", form = form)
 
+""" @app.route('/imageuploader', methods=['POST'])
+@login_required
+def imageuploader():
+    file = request.files.get('file')
+    if file:
+        filename = file.filename.lower()
+        if ext in ['jpg', 'gif', 'png', 'jpeg']:
+            img_fullpath = os.path.join(app.config['UPLOADED_PATH'], filename)
+            file.save(img_fullpath)
+            return jsonify({'location' : filename})
+
+    # fail, image did not upload
+    output = make_response(404)
+    output.headers['Error'] = 'Image failed to upload'
+    return output """
