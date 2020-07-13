@@ -34,3 +34,13 @@ class CommentForm(FlaskForm):
 	body = TextAreaField('Body', validators = [InputRequired()], render_kw={"rows": 5, "cols": 60})
 
 	submit = SubmitField('Comment')
+
+class RoomForm(FlaskForm):
+	name = StringField('Room name', validators = [InputRequired()])
+
+	submit = SubmitField('Create')
+
+class MessageForm(FlaskForm):
+	body = TextAreaField('Body', validators = [InputRequired()])
+
+	submit = SubmitField('Send')

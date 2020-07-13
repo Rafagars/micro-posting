@@ -26,6 +26,7 @@ class User(db.Model, UserMixin):
 	comment_liked = db.relationship('CommentLike',
 								foreign_keys='CommentLike.user_id',
 								backref='user', lazy='dynamic')
+	messages = db.relationship('RoomMessage', backref='user', lazy='dynamic')
 	
 	def like_post(self, post):
 		if not self.has_liked(post):
@@ -142,7 +143,7 @@ class PostLike(db.Model):
 """ Model for Comments """
 class Comment(db.Model):
 	id = db.Column(db.Integer, primary_key = True)
-	body = db.Column(db.String)
+	body = db.Column(db.Text)
 	user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 	post_id = db.Column(db.Integer, db.ForeignKey('post.id'))
 	created = db.Column(db.DateTime, default = datetime.datetime.now)
@@ -163,6 +164,17 @@ class CommentLike(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
 	user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 	comment_id = db.Column(db.Integer, db.ForeignKey('comment.id'))
+
+class Room(db.Model):
+	id = db.Column(db.Integer, primary_key=True)
+	name = db.Column(db.String, unique=True, nullable=False)
+	messages = db.relationship('RoomMessage', backref='room', lazy='dynamic')
+
+class RoomMessage(db.Model):
+	id = db.Column(db.Integer, primary_key=True)
+	body = db.Column(db.Text)
+	user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+	room_id = db.Column(db.Integer, db.ForeignKey('room.id'))
 
 db.create_all()
 

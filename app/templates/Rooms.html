@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %} Chat Rooms {% endblock %}
+
+{% block content %}
+<div class="rooms">
+    <a href="{{url_for('new_room')}}" class="btn btn-primary">New Room</a>
+    {% for room in rooms %}
+    <div class="room">
+        <h5>{{room.name}}</h5>
+        <small><p>Messages: {{room.messages.count}}</p></small>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
