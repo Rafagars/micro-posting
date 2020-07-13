@@ -21,23 +21,14 @@
 				
 {% endfor %}
 
-	<nav aria-label="Page navigation">
-		<ul class="pagination">
-		{% if prev_url %}
-    	<li class="page-item"><a class="page-link" href="{{ prev_url }}">Newer posts</a></li>
-    	{% endif %}
-    	{% if next_url %}
-    	<li class="page-item"><a class="page-link" href="{{ next_url }}">Older posts</a></li>
-    	{% endif %}
-		</ul>
-	</nav>
+{% include '_pagination.html' %}
 
 </div>
 
 {% else %}
-	<div class="jumbotron">
-		<h1 class="text-center">Welcome to Micro-Posting</h1>
-		<a href="{{url_for('signup')}}" class="btn btn-lg btn-primary offset-5"> Sign Up</a>
+	<div class="jumbotron text-center">
+		<h1>Welcome to Micro-Posting</h1>
+		<a href="{{url_for('signup')}}" class="btn btn-lg btn-primary"> Sign Up</a>
 	</div>
 {% endif %}
 {% endblock %}
