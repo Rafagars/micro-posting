@@ -1,9 +1,11 @@
-from app import app, db
-from app.models import User, Post, PostLike, Comment, CommentLike
-from app.forms import SignUpForm, LoginForm, NewPost, EditUser, CommentForm
-from flask import Flask, flash, render_template, abort, redirect, url_for, request
+from app import app, db, socketio
+from app.models import User, Post, PostLike, Comment, CommentLike, Room, RoomMessage
+from app.forms import SignUpForm, LoginForm, NewPost, EditUser, CommentForm, RoomForm, MessageForm
+from flask import Flask, flash, render_template, abort, redirect, url_for, request, session
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from werkzeug.urls import url_parse
+from flask_socketio import emit, join_room, leave_room
+
 
 login_manager = LoginManager(app)
 login_manager.init_app(app)
@@ -243,6 +245,7 @@ def edit_user(user_id):
 			message = "That's not your current password"
 			return render_template("EditUser.html", form = form, message = message)
 	return render_template("EditUser.html", form = form)
+
 
 """ @app.route('/imageuploader', methods=['POST'])
 @login_required
