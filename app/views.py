@@ -1,6 +1,6 @@
 from app import app, db
-from app.models import User, Post, PostLike, Comment, CommentLike, Room, RoomMessage
-from app.forms import SignUpForm, LoginForm, NewPost, EditUser, CommentForm, RoomForm, MessageForm
+from app.models import User, Post, PostLike, Comment, CommentLike
+from app.forms import SignUpForm, LoginForm, NewPost, EditUser, CommentForm
 from flask import Flask, flash, render_template, abort, redirect, url_for, request, session, jsonify
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from werkzeug.urls import url_parse
