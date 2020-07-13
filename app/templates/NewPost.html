@@ -20,29 +20,7 @@
     {% if form %}
     <form action="{{url_for('new_post')}}" method="POST">
         
-        <!-- Title Field -->
-        <p class="d-flex justify-content-center">
-            {{ form.title.label }}: <br>
-            {{ form.title(class = 'form-control') }}
-        </p>
-        <br>
-        {% if form.title.errors %}
-            {% for error in form.title.errors%}
-            <b style="color: tomato;">
-				{{ error }}
-			</b> <br>
-		    {% endfor %}
-        {% endif %}
-        
-        <!-- Body Field -->
-        <p class="d-flex justify-content-center">
-            {{ form.body.label }}: <br>
-            {{ form.body(class = 'form-control', id = 'mytextarea')}}
-        </p>
-        <br>
-        {{ form.csrf_token }}
-        <br>
-        <button class="submit btn btn-primary">{{ form.submit(class = 'btn btn-primary')}}</button>
+        {% include '_form.html' %}
 
     </form>
     {% endif %}

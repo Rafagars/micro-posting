@@ -19,25 +19,8 @@
     {% if form %}
     <form action="{{url_for('edit_post', post_id = post.id)}}" method="POST">
         
-        <!-- Title Field -->
-        {{ form.title.label }}: <br>
-        {{ form.title(class = 'form-control') }}
-        <br>
-        {% if form.title.errors %}
-            {% for error in form.title.errors%}
-            <b style="color: tomato;">
-				{{ error }}
-			</b> <br>
-		    {% endfor %}
-        {% endif %}
+        {% include '_form.html' %}
         
-        <!-- Body Field -->
-        {{ form.body.label }}: <br>
-        {{ form.body(class = 'form-control', id = 'mytextarea')}}
-        <br>
-        {{ form.csrf_token }}
-        <br>
-        <button class="submit btn btn-primary">{{ form.submit(class = 'btn btn-primary')}}</button>
     </form>
     {% endif %}
 </div>

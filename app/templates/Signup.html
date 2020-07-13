@@ -15,7 +15,7 @@ Sign-Up
 
 {% if form %}
 <form action="{{url_for('signup')}}" method="POST">
-    {{ form.csrf_token }}
+    
     <!-- Full Name Field -->
     <label class="label"><i class="fas fa-user"></i></label>
     {{ form.username(placeholder="Username", style="color:white;") }} 
