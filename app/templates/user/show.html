@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "./base.html" %}
 
 {% block title %} {{ user.username }}'s Profile {% endblock %}
 
@@ -19,11 +19,11 @@
 <div>
 	{% for post in posts %}
 	<br>
-	{% include '_post.html' %}
+	{% include './post/_post.html' %}
 				
 	{% endfor %}
 
-	{% include '_pagination.html' %}
+	{% include './_pagination.html' %}
 </div>
 
 {% endblock %}

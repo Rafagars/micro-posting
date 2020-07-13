@@ -1,9 +1,9 @@
-{% extends 'base.html' %}
+{% extends './base.html' %}
 
 {% block title %} {{post.title}} {% endblock %}
 
 {% block content %}
-    {% include '_post.html' %}
+    {% include 'post/_post.html' %}
     <p> Comments ({{post.comments.count()}}) </p>
     <div class="">
     	<form action="{{ post.public_url() }}" method="POST" class="form-group">
@@ -15,7 +15,7 @@
     <br>
     <div>
     {% for comment in comments %}
-        {% include '_comment.html' %}
+        {% include 'post/_comment.html' %}
     {% endfor %}
 	</div>
 

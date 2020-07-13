@@ -30,6 +30,7 @@ def index():
 		post.username = user.username
 	return render_template("home.html", posts = posts.items, next_url = next_url, prev_url = prev_url)
 
+#### SESSION ####
 @app.route("/login", methods = ["POST", "GET"])
 def login():
 	if current_user.is_authenticated:
@@ -47,8 +48,8 @@ def login():
 			return redirect(next_page)
 		else:
 			message = "Sorry, wrong email or pasword" 
-			return(render_template('login.html', form = form, message = message))
-	return render_template('login.html', form = form)
+			return(render_template('session/login.html', form = form, message = message))
+	return render_template('session/login.html', form = form)
 
 @app.route("/signup", methods = ["POST", "GET"])
 def signup():
@@ -84,7 +85,7 @@ def signup():
 				next_page = url_for('index')
 			flash('Welcome to Micro-Posting')
 			return redirect(next_page)
-	return render_template('Signup.html', form = form, message = message)
+	return render_template('session/Signup.html', form = form, message = message)
 
 
 @app.route("/logout")
@@ -93,6 +94,7 @@ def logout():
 	logout_user()
 	return redirect(url_for('index'))
 
+##### POST #########
 @app.route("/post/new", methods = ["POST", "GET"])
 @login_required
 def new_post():
@@ -102,7 +104,7 @@ def new_post():
 		new_post.save()
 		flash('Post created')
 		return redirect(url_for("index"))
-	return render_template("NewPost.html", form = form)
+	return render_template("post/new.html", form = form)
 
 @app.route("/post/edit/<int:post_id>", methods = ["POST", "GET"])
 @login_required
@@ -126,7 +128,7 @@ def edit_post(post_id):
 			flash('Post edited')
 			return redirect(url_for("index"))
 
-	return render_template("EditPost.html", post = post, form = form)
+	return render_template("post/edit.html", post = post, form = form)
 
 @app.route("/post/show/<string:slug>", methods = ["POST", "GET"])
 def show_post(slug):
@@ -136,7 +138,7 @@ def show_post(slug):
 	user = User.get_by_id(post.posted_by)
 	post.username = user.username
 	page = request.args.get('page', 1, type=int)
-	comments = Comment.query.order_by(Comment.id.desc()).paginate(page = page, per_page = 5, error_out = True)
+	comments = Comment.query.filter_by(post_id = post.id).order_by(Comment.id.desc()).paginate(page = page, per_page = 5, error_out = True)
 	for comment in comments.items:
 		user = User.get_by_id(comment.user_id)
 		# I don't want to store this elements in the database but I need them in the front end
@@ -157,9 +159,9 @@ def show_post(slug):
 			return redirect(post.public_url())
 		except:
 			db.session.rollback()
-			return render_template("ShowPost.html", post = post, form = form, comments = comments.items, next_url = next_url, prev_url = prev_url)
+			return render_template("post/show.html", post = post, form = form, comments = comments.items, next_url = next_url, prev_url = prev_url)
 			
-	return render_template("ShowPost.html", post = post, form = form, comments = comments.items, next_url = next_url, prev_url = prev_url)
+	return render_template("post/show.html", post = post, form = form, comments = comments.items, next_url = next_url, prev_url = prev_url)
 
 
 @app.route("/delete_post/<int:post_id>")
@@ -218,6 +220,7 @@ def comment_like(comment_id, action):
         db.session.commit()
     return redirect(request.referrer)
 
+###### USER #######
 @app.route("/user/<username>")
 def show_user(username):
 	user = User.query.filter_by(username = username).first()
@@ -228,7 +231,7 @@ def show_user(username):
 	if posts.has_next else None
 	prev_url = url_for('show_user', username = user.username, page=posts.prev_num) \
     if posts.has_prev else None
-	return render_template("ShowUser.html", posts = posts.items, user = user, next_url = next_url, prev_url = prev_url)
+	return render_template("user/show.html", posts = posts.items, user = user, next_url = next_url, prev_url = prev_url)
 
 @app.route("/user/edit/<int:user_id>", methods = ['POST', 'GET'])
 @login_required
@@ -243,10 +246,10 @@ def edit_user(user_id):
 			return redirect(url_for('index'))
 		else:
 			message = "That's not your current password"
-			return render_template("EditUser.html", form = form, message = message)
-	return render_template("EditUser.html", form = form)
+			return render_template("user/edit.html", form = form, message = message)
+	return render_template("user/edit.html", form = form)
 
-
+###### UPLOAD IMAGE ######
 @app.route('/imageuploader', methods=['POST'])
 @login_required
 def imageuploader():

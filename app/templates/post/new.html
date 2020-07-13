@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends './base.html' %}
 
 {% block title %} New Post {% endblock %}
 
@@ -20,7 +20,7 @@
     {% if form %}
     <form action="{{url_for('new_post')}}" method="POST">
         
-        {% include '_form.html' %}
+        {% include 'post/_form.html' %}
 
     </form>
     {% endif %}
