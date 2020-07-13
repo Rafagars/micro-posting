@@ -49,6 +49,12 @@
 	<script>
 		tinymce.init({
 		  selector: '#mytextarea',
+		  plugins: "autolink emoticons image imagetools",
+		  toolbar: "emoticons image",
+		  file_picker_types: 'image media',
+		  images_upload_url: '/imageuploader',
+		  automatic_uploads: false,
+		  images_upload_base_path: '/static/media', 
 		  width: "100%",
 		});
 	  </script>

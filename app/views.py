@@ -1,10 +1,10 @@
 from app import app, db
 from app.models import User, Post, PostLike, Comment, CommentLike, Room, RoomMessage
 from app.forms import SignUpForm, LoginForm, NewPost, EditUser, CommentForm, RoomForm, MessageForm
-from flask import Flask, flash, render_template, abort, redirect, url_for, request, session
+from flask import Flask, flash, render_template, abort, redirect, url_for, request, session, jsonify
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from werkzeug.urls import url_parse
-
+import os
 
 
 login_manager = LoginManager(app)
@@ -247,18 +247,19 @@ def edit_user(user_id):
 	return render_template("EditUser.html", form = form)
 
 
-""" @app.route('/imageuploader', methods=['POST'])
+@app.route('/imageuploader', methods=['POST'])
 @login_required
 def imageuploader():
     file = request.files.get('file')
     if file:
         filename = file.filename.lower()
+        fn, ext = filename.split(".")
         if ext in ['jpg', 'gif', 'png', 'jpeg']:
-            img_fullpath = os.path.join(app.config['UPLOADED_PATH'], filename)
+            img_fullpath = os.path.join('app/static/media', filename)
             file.save(img_fullpath)
             return jsonify({'location' : filename})
 
     # fail, image did not upload
     output = make_response(404)
     output.headers['Error'] = 'Image failed to upload'
-    return output """
+    return output
