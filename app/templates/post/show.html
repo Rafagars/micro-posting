@@ -4,20 +4,22 @@
 
 {% block content %}
     {% include 'post/_post.html' %}
-    <p> Comments ({{post.comments.count()}}) </p>
-    <div class="">
-    	<form action="{{ post.public_url() }}" method="POST" class="form-group">
-    	{{ form.body(class= 'form-control') }} <br>
-    	{{ form.csrf_token }}
-        {{ form.submit(class = 'btn btn-primary')}}
-    	</form>
+    <div class="container col-11">
+        <p> Comments ({{post.comments.count()}}) </p>
+        <div class="">
+            <form action="{{ post.public_url() }}" method="POST" class="form-group">
+            {{ form.body(class= 'form-control') }} <br>
+            {{ form.csrf_token }}
+            {{ form.submit(class = 'btn btn-primary')}}
+            </form>
+        </div>
+        <br>
+        <div>
+        {% for comment in comments %}
+            {% include 'post/_comment.html' %}
+        {% endfor %}
+        </div>
     </div>
-    <br>
-    <div>
-    {% for comment in comments %}
-        {% include 'post/_comment.html' %}
-    {% endfor %}
-	</div>
 
     <nav aria-label="Page navigation">
         <ul class="pagination">

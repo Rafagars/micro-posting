@@ -110,23 +110,27 @@ def new_post():
 @login_required
 def edit_post(post_id):
 	post = Post.query.get(post_id)
-	form = NewPost(obj=post) #obj=post so that way the content of the post appears in the form
-	if post is None:
-		#In case that the user try to edit a post that doesn't exist
-		abort(404, description="No Post was found with the given ID")
-	if form.validate_on_submit():
-		post.title = form.title.data
-		post.body = form.body.data
-		post.posted_by = current_user.id
-		try:
-			db.session.commit()
-		except:
-			db.session.rollback()
-			return render_template("EditPost.html", post = post, form = form, message = "Error editing the Post")
-		finally:
-			db.session.close()
-			flash('Post edited')
-			return redirect(url_for("index"))
+	if current_user.id == post.posted_by:
+		form = NewPost(obj=post) #obj=post so that way the content of the post appears in the form
+		if post is None:
+			#In case that the user try to edit a post that doesn't exist
+			abort(404, description="No Post was found with the given ID")
+		if form.validate_on_submit():
+			post.title = form.title.data
+			post.body = form.body.data
+			post.posted_by = current_user.id
+			try:
+				db.session.commit()
+			except:
+				db.session.rollback()
+				return render_template("EditPost.html", post = post, form = form, message = "Error editing the Post")
+			finally:
+				db.session.close()
+				flash('Post edited')
+				return redirect(url_for("index"))
+	else:
+		flash("You aren't the post user")
+		return redirect(url_for("index"))
 
 	return render_template("post/edit.html", post = post, form = form)
 
@@ -168,32 +172,38 @@ def show_post(slug):
 @login_required
 def delete_post(post_id):
 	post = Post.query.get(post_id)
-	if post is None:
-		abort(404, description="No Post was Found with the given ID")
-	#To delete all post's comments with it	
-	comments = Comment.query.filter_by(post_id = post.id).all()
-	for comment in comments:
-		db.session.delete(comment)
-	db.session.delete(post)
-	try:
-		db.session.commit()
-		flash('Post deleted')
-	except:
-		db.session.rollback()
+	if current_user.id == post.posted_by or current_user.admin:
+		if post is None:
+			abort(404, description="No Post was Found with the given ID")
+		#To delete all post's comments with it
+		comments = Comment.query.filter_by(post_id = post.id).all()
+		for comment in comments:
+			db.session.delete(comment)
+		db.session.delete(post)
+		try:
+			db.session.commit()
+			flash('Post deleted')
+		except:
+			db.session.rollback()
+	else:
+		flash("You aren't the post user")
 	return redirect(url_for('index'))
 
 @app.route("/delete_comment/<int:comment_id>")
 def delete_comment(comment_id):
 	comment = Comment.query.get(comment_id)
 	post = Post.get_by_id(comment.post_id)
-	if comment is None:
-		abort(404, description="No comment was found with the given ID")
-	db.session.delete(comment)
-	try:
-		db.session.commit()
-		flash('Comment deleted')
-	except:
-		db.session.rollback()
+	if current_user.id == comment.user_id or current_user.admin:
+		if comment is None:
+			abort(404, description="No comment was found with the given ID")
+		db.session.delete(comment)
+		try:
+			db.session.commit()
+			flash('Comment deleted')
+		except:
+			db.session.rollback()
+	else:
+		flash("You aren't the comment user")
 	return redirect(post.public_url())
 
 @app.route("/like/<int:post_id>/<action>")
@@ -236,17 +246,22 @@ def show_user(username):
 @app.route("/user/edit/<int:user_id>", methods = ['POST', 'GET'])
 @login_required
 def edit_user(user_id):
-	form = EditUser()
-	if form.validate_on_submit():
-		user = User.get_by_id(user_id)
-		if user.check_password(form.current_password.data):
-			user.set_password(form.new_password.data)
-			user.save()
-			flash('Password changed succesfully')
-			return redirect(url_for('index'))
-		else:
-			message = "That's not your current password"
-			return render_template("user/edit.html", form = form, message = message)
+	form = None
+	if current_user.id == user_id:
+		form = EditUser()
+		if form.validate_on_submit():
+			user = User.get_by_id(user_id)
+			if user.check_password(form.current_password.data):
+				user.set_password(form.new_password.data)
+				user.save()
+				flash('Password changed succesfully')
+				return redirect(url_for('index'))
+			else:
+				message = "That's not your current password"
+				return render_template("user/edit.html", form = form, message = message)
+	else:
+		flash("You can't change other user's password")
+		redirect(url_for('index'))
 	return render_template("user/edit.html", form = form)
 
 ###### UPLOAD IMAGE ######
