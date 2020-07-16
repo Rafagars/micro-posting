@@ -4,19 +4,23 @@
 
 {% block content %}
 
-<img src="{{ user.avatar(100) }}" class="float-left" style="margin-right: 5px">
-<h1> 
-	{{ user.username }}'s Profile 
-	{% if user.admin %}
-		<span>[Admin]</span>
-	{% endif %}
-</h1>
-{% if current_user.id == user.id %}
-<h6><a href="https://gravatar.com/emails" target="_blank">Change Avatar</a></h6>
-<h6><a href="{{url_for('edit_user', user_id = current_user.id)}}"> Change Password</a></h6>
-{% endif %}
+<nav class="side-bar col-md-3">
+    {% if current_user.id == user.id %}
+        <a href="https://gravatar.com/emails" target="_blank"><img src="{{ user.avatar(100) }}" class="float-left" style="margin-right: 5px"></a>
+    {% else %}
+        <img src="{{ user.avatar(100) }}" class="float-left" style="margin-right: 5px">
+    {% endif %}
 
-<div>
+    <h4>@{{ user.username }}</h4>
+        {% if user.admin %}
+            <h4><span>[Admin]</span></h4>
+        {% endif %}
+    {% if current_user.id == user.id %}
+    <h6><a href="{{url_for('edit_user', user_id = current_user.id)}}"> Change Password</a></h6>
+    {% endif %}
+</nav>
+
+<div class="main col-md-9">
 	{% for post in posts %}
 	<br>
 	{% include './post/_post.html' %}

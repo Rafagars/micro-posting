@@ -9,19 +9,18 @@
 	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css">
 </head>
 <body id="body">
-	<header class="navbar navbar-fixed-top navbar-inverse">
+	<header class="navbar navbar-fixed-top navbar-inverse bg-dark">
 		<div class="container">
     		<h1><a href="{{url_for('index')}}">Micro-Posting</a></h1>
     <nav>
-      
-          <a href="{{url_for('index')}}" style="display: inline; margin-right: 5px;">Home</a>
-		  {% if current_user.is_authenticated %}
-          <a href="{{url_for('show_user', username = current_user.username)}}" style="display: inline; margin-right: 5px;">Profile</a>
-          <a href="{{url_for('logout')}}" style="display: inline; margin-right: 5px;">Log out</a>
-          {% else %}
-          <a href="{{url_for('login')}}" style="display: inline; margin-right: 5px;">Login</a>
-          {% endif %}
-  
+        <a href="{{url_for('index')}}" style="display: inline; margin-right: 5px;">Home</a>
+        {% if current_user.is_authenticated %}
+            <a href="{{url_for('show_user', username = current_user.username)}}" style="display: inline; margin-right: 5px;">Profile</a>
+            <a href="{{url_for('logout')}}" style="display: inline; margin-right: 5px;">Log out</a>
+        {% else %}
+            <a href="{{url_for('login')}}" style="display: inline; margin-right: 5px;">Login</a>
+        {% endif %}
+        <button class="btn btn-dark btn-toggle fas fa-moon"></button>
     </nav>
   </div>
 	</header>
@@ -45,23 +44,10 @@
 	<footer id="footer">
 	</footer>
 	
-	<script src="https://cdn.tiny.cloud/1/sfek8dpwib0red5yvsnxdx27a6e3cqhmo3prb7zti40k7wyu/tinymce/5/tinymce.min.js" referrerpolicy="origin"/></script>
-	<script>
-		tinymce.init({
-		  selector: '#mytextarea',
-		  plugins: "a11ychecker casechange formatpainter linkchecker autolink lists checklist media mediaembed permanentpen powerpaste table advtable tinymcespellchecker emoticons image imagetools",
-		  toolbar: "a11ycheck casechange checklist formatpainter permanentpen table emoticons image media",
-		  toolbar_mode: 'floating',
-		  file_picker_types: 'image media',
-		  images_upload_url: '/imageuploader',
-		  automatic_uploads: false,
-		  images_upload_base_path: '/static/media', 
-		  width: "100%",
-		});
-	  </script>
-	<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
-	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-	<script type="text/javascript" src="{{url_for('static', filename='js/bootstrap.min.js')}}"></script>
+	<script src="https://cdn.tiny.cloud/1/sfek8dpwib0red5yvsnxdx27a6e3cqhmo3prb7zti40k7wyu/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+    <script src="{{ url_for('static', filename="js/tinymce.js") }}"></script>
+    <script src="{{ url_for('static', filename='js/theme.js') }}"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 	<script src="{{url_for('static', filename='js/post.js')}}"></script>
     {{ moment.include_moment() }}
 </body>

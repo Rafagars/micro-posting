@@ -3,7 +3,7 @@
 {% block title %} Login {% endblock %}
 
 {% block content %}
-<div id="login" class="mx-auto text-center">
+<div class="session mx-auto text-center">
 
 <h1>Login</h1>
 
@@ -18,7 +18,7 @@
 	
 	<!--Email Field -->
 	<label class="label"><i class="fas fa-envelope"></i></label>
-	{{ form.email(placeholder="Email", style="color:white;") }}
+	{{ form.email(placeholder="Email", style="color:white;", class="form-control") }}
 	<br>
 	{% if form.email.errors %}
 		{% for error in form.email.errors %}
@@ -29,7 +29,7 @@
 	{% endif %}
 	<!-- Password Field -->
 	<label class="label"><i class="fas fa-lock"></i></label>
-	{{ form.password(placeholder="Password", style="color:white;") }}
+	{{ form.password(placeholder="Password", style="color:white;", class="form-control") }}
 	<br>
 	{% if form.password.errors %}
         {% for error in form.password.errors %}

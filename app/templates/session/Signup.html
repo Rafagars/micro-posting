@@ -5,7 +5,7 @@ Sign-Up
 {% endblock %}
 
 {% block content %}
-<div id="signup" class="mx-auto text-center">
+<div class="session mx-auto text-center">
 <h1>Sign Up</h1>
 {% if message %}
 <div class="alert alert-danger" role="alert">
@@ -18,7 +18,7 @@ Sign-Up
     
     <!-- Full Name Field -->
     <label class="label"><i class="fas fa-user"></i></label>
-    {{ form.username(placeholder="Username", style="color:white;") }} 
+    {{ form.username(placeholder="Username", style="color:white;", class="form-control") }}
     <br>
     {% if form.username.errors %}
         {% for error in form.username.errors %}
@@ -29,7 +29,7 @@ Sign-Up
 
     <!-- Email Field -->
     <label class="label"><i class="fas fa-envelope"></i></label>
-    {{ form.email(placeholder="Email", style="color:white;") }} 
+    {{ form.email(placeholder="Email", style="color:white;", class="form-control") }}
     <br>
     {% if form.email.errors %}
         {% for error in form.email.errors %}
@@ -40,7 +40,7 @@ Sign-Up
 
     <!-- Password Field -->
     <label class="label"><i class="fas fa-lock"></i></label>
-    {{ form.password(placeholder="Password", style="color:white;") }}
+    {{ form.password(placeholder="Password", style="color:white;", class="form-control") }}
     <br>
     {% if form.password.errors %}
         {% for error in form.password.errors %}
@@ -51,7 +51,7 @@ Sign-Up
 
     <!-- Confirm Password Field -->
     <label class="label"><i class="fas fa-lock"></i></label>
-    {{ form.confirm_password(placeholder="Confirm Password", style="color:white;") }}
+    {{ form.confirm_password(placeholder="Confirm Password", style="color:white;", class="form-control") }}
     <br>
     {% if form.confirm_password.errors %}
         {% for error in form.confirm_password.errors %}

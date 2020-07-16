@@ -1,127 +1,234 @@
-#body {
-  background-color: #262c32;
-  color: white;
-}
+body {
+  display: flex;
+  flex-direction: column; }
+
+html, body {
+  height: 100%; }
+
+.content {
+  margin-top: 2%;
+  flex: 1 0 auto; }
+
+.footer {
+  background-color: ghostwhite;
+  flex-shrink: 0;
+  min-height: 50px; }
+
+body a:hover {
+  text-decoration: none; }
 
 header {
-  background-color: #24262d;
-}
+  color: white;
+  flex: 1 0 auto;
+  max-height: 100px; }
 
 header a {
   color: white;
-}
+  padding: 5px; }
 
 header a:hover {
   color: gray;
-}
+  text-decoration: none; }
 
+.link {
+  font-size: 1.2em;
+  margin-right: 15px;
+  margin-top: 5px; }
 
-#body a {
-  text-decoration: none;
-}
+body .jumbotron {
+  margin-top: 2%; }
 
-.post {
-  border: 2px double #22272c;
-  background-color: #2b3138;
-  margin-bottom: 5px;
-  padding: 20px 25px;
-}
+body a {
+  text-decoration: none; }
 
-.comment {
-  border: 2px double #22272c;
-  background-color: #2b3138;
-  margin-bottom: 5px;
-  padding: 15px 20px;
-}
-
-#login, #signup {
-  flex: 0 1 auto;
-  background-color: #2b3138;
-  box-shadow: 0 0 9px 0 rgba(0, 0, 0, 0.3);
-  margin: 5% 33%;
+.session {
   max-width: 400px;
-}
-
-  #login h1, #signup h1 {
+  box-shadow: 0 0 9px 0 rgba(0, 0, 0, 0.3);
+  margin: 5% 33%; }
+  .session h1 {
     text-align: center;
-    color: whitesmoke;
-    background-color: #24262d;
     font-size: 24px;
     padding: 20px 0 20px 0;
     border-bottom: 1px solid #dee0e4;
-    
-  }
-
-
-  #login form, #signup form {
+    background-color: cornflowerblue;
+    color: whitesmoke; }
+  .session form {
+    display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    padding-top: 20px;
-    padding-left: 10px;
-    padding-right: 10px;
-  }
-
-  #login form input[type="password"], #login form input[type="text"], #login form input[type="email"],
-  #signup form input[type="password"], #signup form input[type="text"], #signup form input[type="email"] {
-      height: 30px;
-      border: 1px solid #dee0e4;
-      background-color: #2b3138;
-      margin-top: 5px;
-      margin-bottom: 20px;
-      padding: 0 15px;
-    }
-
-  #login form input[type="submit"],  #signup form input[type="submit"]{
-      width: 100%;
-      padding: 15px;
-      margin-top: 20px;
-      background-color: #24262d;
-      border: 0;
-      cursor: pointer;
-      font-weight: bold;
-      color: #ffffff;
-  }
-
-  #login form input[type="submit"]:hover, #signup form input[type="submit"]:hover {
+    padding-top: 20px; }
+  .session form input[type="submit"] {
+    width: 350px;
+    padding: 10px;
+    margin: 15px 0 5px 0;
+    background-color: cornflowerblue;
+    border: 0;
+    cursor: pointer;
+    font-weight: bold;
+    color: #ffffff; }
+  .session form input[type="submit"]:hover {
     background-color: #2b3138;
-    transition: background-color 0.2s;
-  }
+    transition: background-color 0.2s; }
+  .session form .label {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 40px;
+    height: 40px;
+    background-color: cornflowerblue;
+    color: #ffffff; }
+  .session a {
+    padding: 10px; }
 
+.session form input[type="password"], .session form input[type="text"], .session form input[type="email"] {
+  color: black;
+  width: 80%;
+  height: 30px;
+  border: 1px solid #dee0e4;
+  margin: 5px 15px 20px 5px; }
 
-#login form .label, #signup form .label{
-  justify-content: center;
-  align-items: center;
-  width: 35px;
-  height: 35px;
-  background-color: #24262d;
-  color: #ffffff;
-  padding: 5px 10px 0 10px;
-}
+.remember {
+  margin-left: 0; }
 
-#login .redirect, #signup .redirect{
-  margin: 5px 10px;
-}
+.card {
+  background-color: whitesmoke;
+  border: 2px double #22272c; }
 
-.page-link{
-  border-color: #2b3138;
-  background-color: #414a55;
-}
+.field {
+  background-color: whitesmoke;
+  color: black; }
 
-.page-link:hover{
-  border-color: #2b3138;
-  background-color: #3a424c;
-}
+.dropdown-toggle, .dropdown-toggle:visited {
+  background-color: ghostwhite; }
+
+.dropdown-toggle:hover, .dropdown-toggle:active, .dropdown-menu {
+  background-color: ghostwhite; }
+
+.post, .comment {
+  box-sizing: content-box;
+  border: 2px double #22272c;
+  margin-bottom: 5px;
+  padding: 20px; }
+
+.far, .fas {
+  margin-right: 5px; }
+
+.fa-comment {
+  margin-left: 10px; }
+
+.delete {
+  margin-left: 15px; }
 
 .comment img {
   float: left;
   margin-right: 15px;
+  margin-top: 10px; }
+
+.gravatar {
+  margin-right: 5px; }
+
+.room-nav-link {
+  border: 1px solid #a8d6fe;
+  background: #c1e2fe; }
+  .room-nav-link + .room-nav-link {
+    border-top: 0 none; }
+
+.chat {
+  border: 1px solid #d8dbdd;
+  background: #f3f4f5;
+  height: 50vh;
+  border-radius: 5px 5px 0 0;
+  overflow-y: auto; }
+  .chat .chat-message-container {
+    padding: 5px; }
+    .chat .chat-message-container .avatar {
+      margin: 5px; }
+    .chat .chat-message-container .message-content {
+      padding: 5px;
+      border: 1px solid #0275d8;
+      border-radius: 5px;
+      background: #108ffd;
+      color: #fff; }
+    .chat .chat-message-container + .chat-message-container {
+      margin-top: 10px; }
+
+.chat-input {
+  border-top: 0 none;
+  border-radius: 0 0 5px 5px; }
+
+.delete-room {
   margin-top: 10px;
+  margin-bottom: 10px; }
+
+.menu-avatar {
+  width: 35px; }
+
+img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 75%;
+  height: auto; }
+
+.sidebar {
+  height: 100vh;
+  padding: 20px; }
+
+.avatar {
+  margin-left: 5px; }
+
+@media (min-width: 768px) {
+  .main{
+    margin-top: -25%;
+    margin-left: 20%;
+  }
+}
+@media (min-width: 1200px) {
+  .main{
+    margin-top: -8%;
+    margin-left: 20%;
+  }
 }
 
-.far, .fas{
-  margin-right: 5px;
-}
-
-.fa-comment, .fa-trash {
-  margin-left: 10px;
-}
+/*** Light-Theme ***/
+/*** Dark-Theme ***/
+.dark-theme {
+  background-color: #262c32;
+  color: white; }
+  .dark-theme header {
+    background-color: #24262d; }
+    .dark-theme header a {
+      color: white; }
+      .dark-theme header a:hover {
+        color: gray; }
+  .dark-theme .jumbotron {
+    background-color: #2b3138; }
+  .dark-theme .card {
+    background-color: #2b3138; }
+  .dark-theme .post, .dark-theme .comment {
+    background-color: #2b3138; }
+  .dark-theme .btn-light {
+    background-color: #24262d;
+    color: white; }
+  .dark-theme .dropdown-toggle, .dark-theme .dropdown-toggle:visited {
+    background-color: #24262d; }
+  .dark-theme .dropdown-toggle:hover, .dark-theme .dropdown-toggle:active, .dark-theme .dropdown-menu {
+    background-color: #262c32; }
+  .dark-theme .dropdown-item {
+    color: white; }
+  .dark-theme .footer {
+    background-color: #24262d; }
+  .dark-theme .session {
+    background-color: #2b3138; }
+    .dark-theme .session h1 {
+      background-color: #24262d;
+      color: whitesmoke; }
+    .dark-theme .session form .label {
+      background-color: #24262d; }
+    .dark-theme .session form input[type="submit"] {
+      background-color: #24262d; }
+  .dark-theme .session form input[type="password"], .dark-theme .session form input[type="text"], .dark-theme .session form input[type="email"] {
+    background-color: #2b3138;
+    color: white; }
+  .dark-theme .digg_pagination {
+    background: #262c32; }
