@@ -21,9 +21,11 @@
         {% endif %}
         <a href="{{ post.public_url() }}" class="far fa-comment"></a><span>{{ post.comments.count() }} </span>
     </div>
-    
+
     <p>
-        <small> Posted by: <a href="{{url_for('show_user', username = post.username)}}">{{ post.username }}</a> <span> Created {{ moment(post.created).fromNow() }}  </span></small>
-        
+        <span>{{ share.create(title='', sites='facebook, twitter', addition_class='float-right') }}</span>
+        <small>
+            Posted by: <a href="{{url_for('show_user', username = post.username)}}">{{ post.username }}</a> <span> Created {{ moment(post.created).fromNow() }}  </span>
+        </small>
     </p>
 </div>

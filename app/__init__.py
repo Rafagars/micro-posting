@@ -2,6 +2,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_moment import Moment
+from flask_share import Share
 import os
 
 app = Flask(__name__)
@@ -10,6 +11,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///micro-post.db'
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 moment = Moment(app)
+share = Share(app)
 
 from app import models
 
