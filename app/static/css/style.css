@@ -81,7 +81,7 @@ body a {
     padding: 10px; }
 
 .session form input[type="password"], .session form input[type="text"], .session form input[type="email"] {
-  color: black;
+  color: black !important;
   width: 80%;
   height: 30px;
   border: 1px solid #dee0e4;
@@ -229,6 +229,6 @@ img {
       background-color: #24262d; }
   .dark-theme .session form input[type="password"], .dark-theme .session form input[type="text"], .dark-theme .session form input[type="email"] {
     background-color: #2b3138;
-    color: white; }
+    color: white !important; }
   .dark-theme .digg_pagination {
     background: #262c32; }
