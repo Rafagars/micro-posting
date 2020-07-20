@@ -2,33 +2,9 @@
 {% block title %} Home {% endblock %}
 {% block content %}
 
-{% if message %}
-<div class="alert alert-primary" role="alert">
-	{{ message }}
- </div>
-{% endif %}
-
-{% if current_user.is_authenticated %}
-<div class="text-center">
-	<a href="{{url_for('new_post')}}" class="btn btn-primary"> New Post</a>
+<div class="jumbotron text-center">
+    <h1>Welcome to Micro-Posting</h1>
+    <a href="{{url_for('signup')}}" class="btn btn-lg btn-primary"> Sign Up</a>
 </div>
 
-<div>
-			
-{% for post in posts %}
-	<br>
-	{% include 'post/_post.html' %}
-				
-{% endfor %}
-
-{% include '_pagination.html' %}
-
-</div>
-
-{% else %}
-	<div class="jumbotron text-center">
-		<h1>Welcome to Micro-Posting</h1>
-		<a href="{{url_for('signup')}}" class="btn btn-lg btn-primary"> Sign Up</a>
-	</div>
-{% endif %}
 {% endblock %}

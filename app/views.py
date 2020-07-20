@@ -1,7 +1,7 @@
 from app import app, db
-from app.models import User, Post, PostLike, Comment, CommentLike
+from app.models import User, Post, Comment
 from app.forms import SignUpForm, LoginForm, NewPost, EditUser, CommentForm
-from flask import Flask, flash, render_template, abort, redirect, url_for, request, session, jsonify
+from flask import flash, render_template, abort, redirect, url_for, request, jsonify
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from werkzeug.urls import url_parse
 import os
@@ -16,6 +16,12 @@ def load_user(user_id):
 	return User.get_by_id(user_id)
 
 @app.route('/')
+def home():
+	if current_user.is_authenticated:
+		return redirect(url_for('index'))
+	return render_template("home.html")
+
+@app.route('/post')
 def index():
 	page = request.args.get('page', 1, type=int)
 	posts = Post.query.order_by(Post.id.desc()).paginate(page = page, per_page = 5, error_out = True)
@@ -28,13 +34,13 @@ def index():
 	for post in posts.items:
 		user = User.get_by_id(post.posted_by)
 		post.username = user.username
-	return render_template("home.html", posts = posts.items, next_url = next_url, prev_url = prev_url)
+	return render_template("post/index.html", posts = posts.items, next_url = next_url, prev_url = prev_url)
 
 #### SESSION ####
 @app.route("/login", methods = ["POST", "GET"])
 def login():
 	if current_user.is_authenticated:
-		redirect(url_for('index'))
+		return redirect(url_for('index'))
 	form = LoginForm()
 	if form.validate_on_submit():
 		user = User.get_by_email(form.email.data.capitalize())
@@ -54,7 +60,7 @@ def login():
 @app.route("/signup", methods = ["POST", "GET"])
 def signup():
 	if current_user.is_authenticated:
-		redirect(url_for('index'))
+		return redirect(url_for('index'))
 	form = SignUpForm()
 	message = None
 	if form.validate_on_submit():

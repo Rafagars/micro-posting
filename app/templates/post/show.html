@@ -6,13 +6,17 @@
     {% include 'post/_post.html' %}
     <div class="container col-11">
         <p> Comments ({{post.comments.count()}}) </p>
-        <div class="">
-            <form action="{{ post.public_url() }}" method="POST" class="form-group">
-            {{ form.body(class= 'form-control') }} <br>
-            {{ form.csrf_token }}
-            {{ form.submit(class = 'btn btn-primary')}}
-            </form>
-        </div>
+        {% if current_user.is_authenticated %}
+            <div class="">
+                <form action="{{ post.public_url() }}" method="POST" class="form-group">
+                {{ form.body(class= 'form-control') }} <br>
+                {{ form.csrf_token }}
+                {{ form.submit(class = 'btn btn-primary')}}
+                </form>
+            </div>
+        {% else %}
+            <h2 class="text-center">Log in if you want to leave a comment</h2>
+        {% endif %}
         <br>
         <div>
         {% for comment in comments %}
