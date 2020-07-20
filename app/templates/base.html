@@ -27,7 +27,7 @@
   </div>
 	</header>
 
-	<div class="container">
+	<div class="container content">
 	<br>
 	{% with messages = get_flashed_messages() %}
 	{% if messages %}
@@ -43,8 +43,11 @@
 	{% endblock %}	
 	</div>
 
-	<footer id="footer">
-	</footer>
+    <footer class="footer bg-dark text-white">
+      <div class="container">
+        Rafael Garcia 2020
+      </div>
+    </footer>
 	
 	<script src="https://cdn.tiny.cloud/1/sfek8dpwib0red5yvsnxdx27a6e3cqhmo3prb7zti40k7wyu/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
     <script src="{{ url_for('static', filename="js/tinymce.js") }}"></script>
