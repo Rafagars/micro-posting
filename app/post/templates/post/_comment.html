@@ -1,0 +1,29 @@
+<div class="comment">
+    <p>
+        <img src="{{ comment.avatar(80) }}">
+        <div class="c-body">
+            <h6><a href="{{url_for('user.show', username = comment.username)}}">{{ comment.username }}</a></h6>
+            {{ comment.body }}
+            {% if current_user.is_authenticated %}
+                {% if current_user.has_liked(None, comment) %}
+                    <p class="unlike">
+                        <a href="{{ url_for('comment_like', comment_id=comment.id, action='unlike') }}" class="fas fa-heart"></a><span style="margin-left: 5px;">{{ comment.likes.count() }}</span>
+                    </p>
+                    {% else %}
+                    <p class="like">
+                        <a href="{{ url_for('comment_like', comment_id=comment.id, action='like') }}" class="far fa-heart"></a><span style="margin-left: 5px;">{{ comment.likes.count() }}</span>
+                    </p>
+                    {% endif %}
+                    {% if current_user.id == comment.user_id or current_user.admin %}
+                    <h6><a href="{{url_for('delete_comment', comment_id = comment.id)}}" class="float-right fas fa-trash"></a></h6>
+                {% endif %}
+            {% endif %}
+            
+            <p> 
+                <small> Created  {{moment(comment.created).fromNow() }}</small>
+            </p>
+            
+        </div>
+    </p>
+
+</div>

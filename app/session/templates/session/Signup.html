@@ -1,0 +1,69 @@
+{% extends "./base.html" %}
+
+{% block title %}
+Sign-Up 
+{% endblock %}
+
+{% block content %}
+<div class="session mx-auto text-center">
+<h1>Sign Up</h1>
+{% if message %}
+<div class="alert alert-danger" role="alert">
+    {{ message }}
+</div>
+{% endif %}
+
+{% if form %}
+<form action="{{url_for('session.signup')}}" method="POST">
+    
+    <!-- Full Name Field -->
+    <label class="label"><i class="fas fa-user"></i></label>
+    {{ form.username(placeholder="Username", style="color:white;", class="form-control") }}
+    <br>
+    {% if form.username.errors %}
+        {% for error in form.username.errors %}
+        <b style="color:tomato;"> {{ error }} </b> 
+        <br>
+        {% endfor %}
+    {% endif %}
+
+    <!-- Email Field -->
+    <label class="label"><i class="fas fa-envelope"></i></label>
+    {{ form.email(placeholder="Email", style="color:white;", class="form-control") }}
+    <br>
+    {% if form.email.errors %}
+        {% for error in form.email.errors %}
+        <b style="color:tomato;"> {{ error }} </b> 
+        <br>
+        {% endfor %}
+    {% endif %}
+
+    <!-- Password Field -->
+    <label class="label"><i class="fas fa-lock"></i></label>
+    {{ form.password(placeholder="Password", style="color:white;", class="form-control") }}
+    <br>
+    {% if form.password.errors %}
+        {% for error in form.password.errors %}
+        <b style="color:tomato;"> {{ error }} </b> 
+        <br>
+        {% endfor %}
+    {% endif %}
+
+    <!-- Confirm Password Field -->
+    <label class="label"><i class="fas fa-lock"></i></label>
+    {{ form.confirm_password(placeholder="Confirm Password", style="color:white;", class="form-control") }}
+    <br>
+    {% if form.confirm_password.errors %}
+        {% for error in form.confirm_password.errors %}
+        <b style="color:tomato;"> {{ error }} </b>
+        <br>
+        {% endfor %}
+    {% endif %}
+    
+    {{ form.csrf_token }}
+    {{ form.submit }}
+</form> 
+{% endif %}
+<p class="redirect">Already had an account? <a href="{{url_for('session.login')}}">Login</a></p>
+</div>
+{% endblock %}

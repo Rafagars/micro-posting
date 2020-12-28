@@ -1,4 +1,4 @@
-#!/home/rafagars/Documentos/Programming/Python/micro-posting/env/bin/python
+#!/home/rafagars/Documentos/Programming/Python/micro-posting/env/bin/python3
 # EASY-INSTALL-ENTRY-SCRIPT: 'python-slugify==4.0.0','console_scripts','slugify'
 __requires__ = 'python-slugify==4.0.0'
 import re

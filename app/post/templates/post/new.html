@@ -1,0 +1,28 @@
+{% extends './base.html' %}
+
+{% block title %} New Post {% endblock %}
+
+{% block content %}
+
+<div class="d-flex justify-content-center">
+    <div class="spinner-border text-primary" role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
+</div>
+
+<div class="jumbotron">
+    {% if message %}
+    <div class="alert alert-danger" role="alert">
+        {{ message }}
+    </div>
+    {% endif %}
+
+    {% if form %}
+    <form action="{{url_for('post.new')}}" method="POST">
+        
+        {% include 'post/_form.html' %}
+
+    </form>
+    {% endif %}
+</div>
+{% endblock %}
