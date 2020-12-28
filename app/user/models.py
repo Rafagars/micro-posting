@@ -1,10 +1,7 @@
-from flask import url_for
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
-from slugify import slugify
-from sqlalchemy import exc
 from hashlib import md5
-import datetime
+
 
 from app import db
 from app.post.models import PostLike, CommentLike

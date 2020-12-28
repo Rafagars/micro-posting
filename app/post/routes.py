@@ -1,4 +1,4 @@
-from flask import flash, render_template, abort, redirect, url_for, request, jsonify
+from flask import flash, render_template, abort, redirect, url_for, request
 from app import *
 from . import post
 from .models import Post, Comment

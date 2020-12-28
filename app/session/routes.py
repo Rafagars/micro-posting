@@ -3,10 +3,8 @@ from . import session
 from flask_login import current_user
 from app.user.models import User
 from .forms import SignUpForm, LoginForm
-from flask import flash, render_template, abort, redirect, url_for, request, jsonify
+from flask import flash, render_template, redirect, url_for, request
 from werkzeug.urls import url_parse
-import os
-
 
 @session.route("/login", methods = ["POST", "GET"])
 def login():
