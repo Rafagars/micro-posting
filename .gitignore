@@ -1,4 +1,5 @@
 micro-post.db
 .vscode
+.flaskenv
 __pycache__
 env
