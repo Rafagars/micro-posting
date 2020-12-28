@@ -15,9 +15,9 @@
     {% if current_user.is_authenticated %}
     <div class="">
         {% if current_user.has_liked(post) %}
-        <a href="{{ url_for('like_action', post_id=post.id, action='unlike') }}" class="unlike fas fa-heart"></a><span>{{ post.likes.count() }}</span>
+        <a href="{{ url_for('post.like_action', post_id=post.id, action='unlike') }}" class="unlike fas fa-heart"></a><span>{{ post.likes.count() }}</span>
         {% else %}
-        <a href="{{ url_for('like_action', post_id=post.id, action='like') }}" class="like far fa-heart"></a><span>{{ post.likes.count() }}</span>
+        <a href="{{ url_for('post.like_action', post_id=post.id, action='like') }}" class="like far fa-heart"></a><span>{{ post.likes.count() }}</span>
         {% endif %}
         <a href="{{ post.public_url() }}" class="far fa-comment"></a><span>{{ post.comments.count() }} </span>
     </div>

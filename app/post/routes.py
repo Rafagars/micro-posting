@@ -1,7 +1,8 @@
 from flask import flash, render_template, abort, redirect, url_for, request
-from app import *
+from flask_login import current_user, login_required
 from . import post
 from .models import Post, Comment
+from app import app, db
 from app.user.models import User
 from .forms import  NewPost, CommentForm
 
@@ -115,7 +116,7 @@ def delete(post_id):
 		flash("You aren't the post user")
 	return redirect(url_for('post.index'))
 
-@app.route("/delete_comment/<int:comment_id>")
+@post.route("/delete_comment/<int:comment_id>")
 def delete_comment(comment_id):
 	comment = Comment.query.get(comment_id)
 	post = Post.get_by_id(comment.post_id)
@@ -132,7 +133,7 @@ def delete_comment(comment_id):
 		flash("You aren't the comment user")
 	return redirect(post.public_url())
 
-@app.route("/like/<int:post_id>/<action>")
+@post.route("/like/<int:post_id>/<action>")
 @login_required
 def like_action(post_id, action):
     post = Post.query.filter_by(id = post_id).first_or_404()
@@ -144,7 +145,7 @@ def like_action(post_id, action):
         db.session.commit()
     return redirect(request.referrer)
 
-@app.route("/comment_like/<int:comment_id>/<action>")
+@post.route("/comment_like/<int:comment_id>/<action>")
 @login_required
 def comment_like(comment_id, action):
     comment = Comment.query.filter_by(id = comment_id).first_or_404()
