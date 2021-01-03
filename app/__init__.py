@@ -22,7 +22,6 @@ from .post import post
 from .user import user
 from .session import session
 
-
 app.register_blueprint(post)
 app.register_blueprint(user)
 app.register_blueprint(session)
@@ -33,6 +32,7 @@ login_manager.login_view = "session.login"
 
 from app.user.models import User
 
+
 @login_manager.user_loader
 def load_user(user_id):
     return User.get_by_id(user_id)
@@ -40,16 +40,17 @@ def load_user(user_id):
 
 @app.route('/')
 def home():
-	if current_user.is_authenticated:
-		return redirect(url_for('post.index'))
-	return render_template("home.html")
+    if current_user.is_authenticated:
+        return redirect(url_for('post.index'))
+    return render_template("home.html")
+
 
 db.create_all()
 
 # Commit changes in the session
 try:
     db.session.commit()
-except: 
+except:
     db.session.rollback()
 finally:
     db.session.close()
