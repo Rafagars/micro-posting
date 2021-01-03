@@ -1,5 +1,5 @@
 micro-post.db
-.vscode
-.flaskenv
+.*
+!.gitignore
 __pycache__
 env

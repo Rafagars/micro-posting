@@ -32,7 +32,7 @@ class User(db.Model, UserMixin):
 				post_id = post.id
 			).delete()
 
-	#Since has_liked is for posts and comment, we specified that the post as None		
+	#Since has_liked is for posts and comment, we specified post as None
 	def like_comment(self, comment):
 		if not self.has_liked(None, comment):
 			like = CommentLike(user_id = self.id, comment_id = comment.id)
@@ -45,7 +45,7 @@ class User(db.Model, UserMixin):
 				comment_id = comment.id
 			).delete()
    
-   	#Only one function to check is the user already liked the post or comment
+#Only one function to check is the user already liked the post or comment
 	def has_liked(self, post = None, comment = None):
 		if post != None:
 			return PostLike.query.filter(
