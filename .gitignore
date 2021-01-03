@@ -3,4 +3,3 @@ micro-post.db
 !.gitignore
 __pycache__
 env
-/env/
