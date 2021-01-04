@@ -13,7 +13,7 @@ class Post(db.Model):
     body = db.Column(db.Text)
     posted_by = db.Column(db.Integer, db.ForeignKey('user.id'))
     created = db.Column(db.DateTime, default = datetime.datetime.now)
-    likes = db.relationship('PostLike', backref='post', lazy='dynamic')
+    likes = db.relationship('PostLike', backref='post', lazy='dynamic', primaryjoin="Post.id == PostLike.post_id")
     comments = db.relationship('Comment', backref='post', lazy = 'dynamic')
 
     def save(self):
@@ -47,14 +47,6 @@ class Post(db.Model):
     @staticmethod
     def get_by_slug(slug):
         return Post.query.filter_by(title_slug = slug).first()
- 
-""" Model for Post Likes """
-class PostLike(db.Model):
-    __tablename__ = 'post_like'
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    post_id = db.Column(db.Integer, db.ForeignKey('post.id'))
-
 
 """ Model for Comments """
 class Comment(db.Model):
@@ -74,9 +66,32 @@ class Comment(db.Model):
             db.session.add(self)
         db.session.commit()
 
-""" Model for Comment Likes """
-class CommentLike(db.Model):
-    __tablename__ = 'comment_like'
-    id = db.Column(db.Integer, primary_key=True)
+class Like(db.Model):
+    __tablename__ = 'like'
+    id = db.Column(db.Integer, primary_key = True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    type = db.Column(db.String(10))
+
+    __mapper_args__={
+        'polymorphic_identity': 'like',
+        'polymorphic_on': type
+    }
+
+class PostLike(Like):
+    __tablename__= 'post_like'
+    id = db.Column(db.Integer, db.ForeignKey('like.id', ondelete='CASCADE'), primary_key = True)
+    post_id = db.Column(db.Integer, db.ForeignKey('post.id'))
+
+    __mapper_args__ = {
+        'polymorphic_identity': 'post',
+    }
+
+""" Model for Comment Likes """
+class CommentLike(Like):
+    __tablename__ = 'comment_like'
+    id = db.Column(db.Integer, db.ForeignKey('like.id', ondelete='CASCADE'), primary_key=True)
     comment_id = db.Column(db.Integer, db.ForeignKey('comment.id'))
+
+    __mapper_args__={
+        'polymorphic_identity': 'comment'
+    }

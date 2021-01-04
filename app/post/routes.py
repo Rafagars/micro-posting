@@ -146,10 +146,10 @@ def delete_comment(comment_id):
 def like_action(post_id, action):
     post = Post.query.filter_by(id=post_id).first_or_404()
     if action == 'like':
-        current_user.like_post(post)
+        current_user.like('post', post)
         db.session.commit()
     if action == 'unlike':
-        current_user.unlike_post(post)
+        current_user.unlike('post', post)
         db.session.commit()
     return redirect(request.referrer)
 
@@ -159,9 +159,9 @@ def like_action(post_id, action):
 def comment_like(comment_id, action):
     comment = Comment.query.filter_by(id=comment_id).first_or_404()
     if action == 'like':
-        current_user.like_comment(comment)
+        current_user.like('comment', comment)
         db.session.commit()
     if action == 'unlike':
-        current_user.unlike_comment(comment)
+        current_user.unlike('comment', comment)
         db.session.commit()
     return redirect(request.referrer)

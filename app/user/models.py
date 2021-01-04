@@ -3,7 +3,7 @@ from flask_login import UserMixin
 from hashlib import md5
 
 from app import db
-from app.post.models import PostLike, CommentLike
+from app.post.models import Like, PostLike, CommentLike
 
 
 class User(db.Model, UserMixin):
@@ -13,37 +13,36 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String)
     admin = db.Column(db.Boolean, default=False)
     post = db.relationship('Post', backref='user')
-    liked = db.relationship('PostLike',
-                            foreign_keys='PostLike.user_id',
+    liked = db.relationship('Like',
+                            foreign_keys='Like.user_id',
                             backref='user', lazy='dynamic')
-    comment_liked = db.relationship('CommentLike',
-                                    foreign_keys='CommentLike.user_id',
-                                    backref='user', lazy='dynamic')
 
-    def like_post(self, post):
-        if not self.has_liked(post):
-            like = PostLike(user_id=self.id, post_id=post.id)
-            db.session.add(like)
+    def like(self, type, content):
+        if type == 'post':
+            if not self.has_liked(content):
+                like = PostLike(user_id=self.id, post_id=content.id)
+                db.session.add(like)
+        elif type == 'comment':
+            if not self.has_liked(None, content):
+                like = CommentLike(user_id=self.id, comment_id=content.id)
+                db.session.add(like)
 
-    def unlike_post(self, post):
-        if self.has_liked(post):
-            PostLike.query.filter_by(
-                user_id=self.id,
-                post_id=post.id
-            ).delete()
-
-    # Since has_liked is for posts and comment, we specified post as None
-    def like_comment(self, comment):
-        if not self.has_liked(None, comment):
-            like = CommentLike(user_id=self.id, comment_id=comment.id)
-            db.session.add(like)
-
-    def unlike_comment(self, comment):
-        if self.has_liked(None, comment):
-            CommentLike.query.filter_by(
-                user_id=self.id,
-                comment_id=comment.id
-            ).delete()
+    def unlike(self, type, content):
+        if type == 'post':
+            if self.has_liked(content):
+                like = db.session.query(PostLike).filter(
+                    PostLike.user_id == self.id,
+                    PostLike.post_id == content.id
+                ).first()
+                db.session.delete(like)
+        elif type == 'comment':
+            if self.has_liked(None, content):
+                like = db.session.query(CommentLike).filter(
+                    CommentLike.user_id == self.id,
+                    CommentLike.comment_id == content.id
+                ).first()
+                db.session.delete(like)
+        db.session.commit()
 
     # Only one function to check is the user already liked the post or comment
     def has_liked(self, post=None, comment=None):
